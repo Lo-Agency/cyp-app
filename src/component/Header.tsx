@@ -3,12 +3,10 @@ import logo from "../asset/logo.png";
 function Header() {
   return (
     <header className="flex justify-between items-center px-10 py-4 bg-white shadow-sm">
-      {/* لوگو */}
       <div className="flex items-center space-x-2">
         <img src={logo} alt="Logo" className="w-28 h-auto" />
       </div>
 
-      {/* منوها + آیکن همبرگر کنار هم */}
       <div className="flex items-center space-x-6">
         <nav>
           <ul className="flex items-center space-x-8 text-blue-600 text-sm font-medium">
