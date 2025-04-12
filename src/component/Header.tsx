@@ -1,6 +1,25 @@
+import { useEffect, useRef, useState } from "react";
 import logo from "../asset/logo.png";
-
+import Nav from "./Nav";
 function Header() {
+  const [openDropdown, setOpenDropdown] = useState(false);
+  const dropRef = useRef<HTMLDivElement | null>(null);
+
+  const handleDropdown = () => {
+    setOpenDropdown(!openDropdown);
+  };
+  const handleClickOutside = (e: MouseEvent) => {
+    if (!dropRef?.current?.contains(e.target as Node)) {
+      setOpenDropdown(false);
+    }
+  };
+  useEffect(() => {
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
   return (
     <header className="flex justify-between items-center px-10 py-4 bg-white shadow-sm">
       <div className="flex items-center space-x-2">
@@ -8,35 +27,10 @@ function Header() {
       </div>
 
       <div className="flex items-center space-x-6">
-        <nav>
-          <ul className="flex items-center space-x-8 text-blue-600 text-sm font-medium">
-            <li>
-              <a
-                href="#"
-                className="hover:text-blue-800 transition-colors duration-200"
-              >
-                درباره ما
-              </a>
-            </li>
-            <li>
-              <a
-                href="#"
-                className="hover:text-blue-800 transition-colors duration-200"
-              >
-                ویژگی‌ها
-              </a>
-            </li>
-            <li>
-              <a
-                href="#"
-                className="hover:text-blue-800 transition-colors duration-200"
-              >
-                تماس با ما
-              </a>
-            </li>
-          </ul>
-        </nav>
-        <button className="text-blue-600">
+        <div className="hidden md:block">
+          <Nav />
+        </div>
+        <button className="text-blue-600" onClick={handleDropdown}>
           <svg
             xmlns="http://www.w3.org/2000/svg"
             className="h-6 w-6"
@@ -52,6 +46,28 @@ function Header() {
             />
           </svg>
         </button>
+        {openDropdown && (
+          <div className="absolute top-12 right-0 bg-white shadow-lg rounded-md w-48 py-2 z-10">
+            <a
+              href="#"
+              className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+            >
+              ورود / خروج
+            </a>
+            <a
+              href="#"
+              className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+            >
+              ثبت نام
+            </a>
+            <a
+              href="#"
+              className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+            >
+              فرصت‌های شغلی
+            </a>
+          </div>
+        )}
       </div>
     </header>
   );
