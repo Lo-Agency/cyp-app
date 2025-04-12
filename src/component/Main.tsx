@@ -7,7 +7,7 @@ function Main() {
       <div dir="rtl" className="m-6 text-base block">
         اپلیکیشنی ساده و کاربردی برای مدیریت دخل و خرج
       </div>
-      <button className="bg-blue-500 transition delay-150 duration-300 ease-in-out hover:-translate-y-1 hover:scale-110 hover:bg-indigo-500 ... w-32 h-10 rounded-xl">
+      <button className="bg-blue-500 transition delay-150 duration-300 ease-in-out hover:-translate-y-1 hover:scale-110 hover:bg-indigo-500 w-32 h-10 rounded-xl">
         شروع رایگان
       </button>
     </div>
