@@ -19,6 +19,11 @@ function Header() {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
+  const dropdownItems = [
+    { label: "ورود / خروج", href: "#" },
+    { label: "ثبت نام", href: "#" },
+    { label: "فرصت‌های شغلی", href: "#" },
+  ];
 
   return (
     <header className="flex justify-between items-center px-10 py-4 bg-white shadow-sm">
@@ -48,24 +53,15 @@ function Header() {
         </button>
         {openDropdown && (
           <div className="absolute top-12 right-0 bg-white shadow-lg rounded-md w-48 py-2 z-10">
-            <a
-              href="#"
-              className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-            >
-              ورود / خروج
-            </a>
-            <a
-              href="#"
-              className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-            >
-              ثبت نام
-            </a>
-            <a
-              href="#"
-              className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-            >
-              فرصت‌های شغلی
-            </a>
+            {dropdownItems.map((item, index) => (
+              <a
+                key={index}
+                href={item.href}
+                className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+              >
+                {item.label}
+              </a>
+            ))}
           </div>
         )}
       </div>
