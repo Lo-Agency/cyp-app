@@ -26,7 +26,7 @@ function Header() {
   ];
 
   return (
-    <header className="flex justify-between items-center px-10 py-4 bg-white shadow-sm">
+    <header className="flex justify-between items-center px-10 py-4 bg-white relative">
       <div className="flex items-center space-x-2">
         <img src={logo} alt="Logo" className="w-28 h-auto" />
       </div>
@@ -35,7 +35,7 @@ function Header() {
         <div className="hidden md:block">
           <Nav />
         </div>
-        <button className="text-blue-600" onClick={handleDropdown}>
+        <button className="text-blue-600 relative" onClick={handleDropdown}>
           <svg
             xmlns="http://www.w3.org/2000/svg"
             className="h-6 w-6"
@@ -52,16 +52,24 @@ function Header() {
           </svg>
         </button>
         {openDropdown && (
-          <div className="absolute top-12 right-0 bg-white shadow-lg rounded-md w-48 py-2 z-10">
-            {dropdownItems.map((item, index) => (
-              <a
-                key={index}
-                href={item.href}
-                className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-              >
-                {item.label}
-              </a>
-            ))}
+          <div className="absolute top-24 right-0 bg-white shadow-lg rounded-md w-48 h-48 py-2 z-10 ">
+            {dropdownItems.map((item, index) => {
+              const isFirst = index === 0;
+              return (
+                <a
+                  key={index}
+                  href={item.href}
+                  className={`block px-4 py-2 text-lg text-blue-700 hover:bg-gray-100
+        ${
+          isFirst
+            ? "after:content-[''] after:block after:h-px after:bg-gray-300 after:my-2"
+            : ""
+        }`}
+                >
+                  {item.label}
+                </a>
+              );
+            })}
           </div>
         )}
       </div>
