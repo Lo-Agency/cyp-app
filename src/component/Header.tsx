@@ -51,28 +51,28 @@ function Header() {
             />
           </svg>
         </button>
-        {openDropdown && (
-          <div className="absolute top-24 right-12 bg-white shadow-lg rounded-md w-48 h-48 py-2 z-10 ">
-            {dropdownItems.map((item, index) => {
-              const isFirst = index === 0;
-              return (
-                <a
-                  key={index}
-                  href={item.href}
-                  className={`block px-4 py-2 text-lg text-blue-700 hover:bg-gray-100
+      </div>
+      {openDropdown && (
+        <div className="absolute top-24 right-12 bg-white shadow-lg rounded-md w-48 h-48 py-2 z-10 ">
+          {dropdownItems.map((item, index) => {
+            const isFirst = index === 0;
+            return (
+              <a
+                key={index}
+                href={item.href}
+                className={`block px-4 py-2 text-lg text-blue-700 hover:bg-gray-100
         ${
           isFirst
             ? "after:content-[''] after:block after:h-px after:bg-gray-300 after:my-2"
             : ""
         }`}
-                >
-                  {item.label}
-                </a>
-              );
-            })}
-          </div>
-        )}
-      </div>
+              >
+                {item.label}
+              </a>
+            );
+          })}
+        </div>
+      )}
     </header>
   );
 }
