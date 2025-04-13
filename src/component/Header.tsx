@@ -60,7 +60,7 @@ function Header() {
               <a
                 key={index}
                 href={item.href}
-                className={`block px-4 py-2 text-lg text-blue-700 hover:bg-gray-100
+                className={`block px-4 py-2 text-lg text-blue-900 hover:bg-gray-100
         ${
           isFirst
             ? "after:content-[''] after:block after:h-px after:bg-gray-300 after:my-2"
