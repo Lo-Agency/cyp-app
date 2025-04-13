@@ -35,7 +35,7 @@ function Header() {
         <div className="hidden md:block">
           <Nav />
         </div>
-        <button className="text-blue-600 relative" onClick={handleDropdown}>
+        <button className="text-blue-600 " onClick={handleDropdown}>
           <svg
             xmlns="http://www.w3.org/2000/svg"
             className="h-6 w-6"
@@ -52,7 +52,7 @@ function Header() {
           </svg>
         </button>
         {openDropdown && (
-          <div className="absolute top-24 right-0 bg-white shadow-lg rounded-md w-48 h-48 py-2 z-10 ">
+          <div className="absolute top-24 right-12 bg-white shadow-lg rounded-md w-48 h-48 py-2 z-10 ">
             {dropdownItems.map((item, index) => {
               const isFirst = index === 0;
               return (
