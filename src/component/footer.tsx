@@ -1,6 +1,6 @@
 function Footer() {
     return (
-      <footer className="bg-gray-500 text-white py-10 mt-16 mb-0">
+      <footer className="bg-gray-500 text-white py-10 mt-16">
         <div className="max-w-6xl mx-auto px-4 grid grid-cols-1 md:grid-cols-3 items-center gap-8 text-center md:text-right">
           <div className="flex justify-center md:justify-start">
             <img src="src/asset/logo.png" alt="لوگو" className="w-28" />
@@ -18,7 +18,7 @@ function Footer() {
           </div>
         </div>
         <div className="text-center text-xs text-gray-400 mt-6">
-          © {new Date().getFullYear()} مدیریت مالی | تمامی حقوق محفوظ است.
+          © {new Date().getFullYear()} CYP | تمامی حقوق محفوظ است.
         </div>
       </footer>
     );
