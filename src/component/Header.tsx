@@ -73,14 +73,12 @@ function Header() {
           </button>
           <Link
             to="/careers"
-            className="block px-4 py-2 text-lg text-blue-900 hover:bg-gray-100"
+            className="block w-full text-right px-4 py-2 text-lg text-blue-900 hover:bg-gray-100"
           >
             فرصت‌های شغلی
           </Link>
         </div>
       )}
-
-      {/* نمایش مدال لاگین */}
       {showLogin && <LoginModal onClose={() => setShowLogin(false)} />}
     </header>
   );
