@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import logo from "../asset/logo.png";
 
 function LoginModal({ onClose }: { onClose: () => void }) {
   const [email, setEmail] = useState("");
@@ -31,6 +32,9 @@ function LoginModal({ onClose }: { onClose: () => void }) {
         >
           ✖
         </button>
+        <div>
+          <img src={logo} alt="logo" className=" block w-28 h-20 " />
+        </div>
         <h2 dir="rtl" className="text-2xl font-semibold mb-1">
           خوش آمدید!
         </h2>
