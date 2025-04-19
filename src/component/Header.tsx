@@ -3,10 +3,12 @@ import { Link } from "react-router-dom";
 import logo from "../asset/logo.png";
 import Nav from "./Nav";
 import LoginModal from "./LoginModal";
+import RegisterModal from "./RegisterModal";
 
 function Header() {
   const [openDropdown, setOpenDropdown] = useState(false);
   const [showLogin, setShowLogin] = useState(false);
+  const [showRegister, setShowRegister] = useState(false);
   const dropRef = useRef<HTMLDivElement | null>(null);
 
   const handleDropdown = () => {
@@ -66,7 +68,7 @@ function Header() {
             ورود / خروج
           </button>
           <button
-            onClick={() => setShowLogin(true)}
+            onClick={() => setShowRegister(true)}
             className="block w-full text-right px-4 py-2 text-lg text-blue-900 hover:bg-gray-100"
           >
             ثبت نام
@@ -80,6 +82,7 @@ function Header() {
         </div>
       )}
       {showLogin && <LoginModal onClose={() => setShowLogin(false)} />}
+      {showRegister && <RegisterModal onClose={() => setShowRegister(false)} />}
     </header>
   );
 }
