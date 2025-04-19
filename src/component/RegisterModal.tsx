@@ -104,9 +104,9 @@ function RegisterModal({ onClose }: { onClose: () => void }) {
           Already have an account?{" "}
           <Link
             to="/LoginModal"
-            className="flex items-center justify-center text-blue-600 no-underline"
+            className="flex items-center justify-center w-full bg-cyan-900 text-white py-2 rounded-xl hover:bg-cyan-800 transition"
           >
-            Log in
+            ورود
           </Link>
         </p>
       </div>
