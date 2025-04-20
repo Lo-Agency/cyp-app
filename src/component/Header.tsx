@@ -1,29 +1,38 @@
 import { useEffect, useRef, useState } from "react";
+import { Link } from "react-router-dom";
 import logo from "../asset/logo.png";
 import Nav from "./Nav";
-function Header() {
+import LoginModal from "./LoginModal";
+import RegisterModal from "./RegisterModal";
+import { useNavigate } from "react-router-dom";
+
+function Header({ defaultDropDown }: { defaultDropDown?: boolean }) {
   const [openDropdown, setOpenDropdown] = useState(false);
+  const [showLogin, setShowLogin] = useState(false);
+  const [showRegister, setShowRegister] = useState(false);
   const dropRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    setShowRegister(defaultDropDown || false);
+  }, [defaultDropDown]);
+  const navigate = useNavigate();
 
   const handleDropdown = () => {
     setOpenDropdown(!openDropdown);
   };
+
   const handleClickOutside = (e: MouseEvent) => {
     if (!dropRef?.current?.contains(e.target as Node)) {
       setOpenDropdown(false);
     }
   };
+
   useEffect(() => {
     document.addEventListener("mousedown", handleClickOutside);
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
-  const dropdownItems = [
-    { label: "ورود / خروج", href: "#" },
-    { label: "ثبت نام", href: "#" },
-    { label: "فرصت‌های شغلی", href: "#" },
-  ];
 
   return (
     <header className="flex justify-between items-center px-10 py-4 bg-white relative">
@@ -35,7 +44,7 @@ function Header() {
         <div className="hidden md:block">
           <Nav />
         </div>
-        <button className="text-blue-600 " onClick={handleDropdown}>
+        <button className="text-blue-600" onClick={handleDropdown}>
           <svg
             xmlns="http://www.w3.org/2000/svg"
             className="h-6 w-6"
@@ -52,27 +61,37 @@ function Header() {
           </svg>
         </button>
       </div>
+
       {openDropdown && (
-        <div className="absolute top-24 right-12 bg-white shadow-lg rounded-md w-48 h-48 py-2 z-10 ">
-          {dropdownItems.map((item, index) => {
-            const isFirst = index === 0;
-            return (
-              <a
-                key={index}
-                href={item.href}
-                className={`block px-4 py-2 text-lg text-blue-900 hover:bg-gray-100
-        ${
-          isFirst
-            ? "after:content-[''] after:block after:h-px after:bg-gray-300 after:my-2"
-            : ""
-        }`}
-              >
-                {item.label}
-              </a>
-            );
-          })}
+        <div
+          ref={dropRef}
+          className="absolute top-24 right-12 bg-white shadow-lg rounded-md w-48 py-2 z-10"
+        >
+          <button
+            onClick={() => setShowLogin(true)}
+            className="block w-full text-right px-4 py-2 text-lg text-blue-900 hover:bg-gray-100 after:content-[''] after:block after:h-px after:bg-gray-300 after:my-2"
+          >
+            ورود / خروج
+          </button>
+          <button
+            onClick={() => {
+              setShowRegister(true);
+              navigate("/register");
+            }}
+            className="block w-full text-right px-4 py-2 text-lg text-blue-900 hover:bg-gray-100"
+          >
+            ثبت نام
+          </button>
+          <Link
+            to="/careers"
+            className="block w-full text-right px-4 py-2 text-lg text-blue-900 hover:bg-gray-100"
+          >
+            فرصت‌های شغلی
+          </Link>
         </div>
       )}
+      {showLogin && <LoginModal onClose={() => setShowLogin(false)} />}
+      {showRegister && <RegisterModal onClose={() => setShowRegister(false)} />}
     </header>
   );
 }
