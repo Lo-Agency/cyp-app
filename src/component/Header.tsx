@@ -4,12 +4,18 @@ import logo from "../asset/logo.png";
 import Nav from "./Nav";
 import LoginModal from "./LoginModal";
 import RegisterModal from "./RegisterModal";
+import { useNavigate } from "react-router-dom";
 
-function Header() {
+function Header({ defaultDropDown }: { defaultDropDown?: boolean }) {
   const [openDropdown, setOpenDropdown] = useState(false);
   const [showLogin, setShowLogin] = useState(false);
   const [showRegister, setShowRegister] = useState(false);
   const dropRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    setShowRegister(defaultDropDown || false);
+  }, [defaultDropDown]);
+  const navigate = useNavigate();
 
   const handleDropdown = () => {
     setOpenDropdown(!openDropdown);
@@ -68,7 +74,10 @@ function Header() {
             ورود / خروج
           </button>
           <button
-            onClick={() => setShowRegister(true)}
+            onClick={() => {
+              setShowRegister(true);
+              navigate("/register");
+            }}
             className="block w-full text-right px-4 py-2 text-lg text-blue-900 hover:bg-gray-100"
           >
             ثبت نام

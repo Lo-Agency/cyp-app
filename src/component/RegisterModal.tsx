@@ -1,11 +1,16 @@
 import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 function RegisterModal({ onClose }: { onClose: () => void }) {
+  const navigate = useNavigate();
   return (
     <div className="fixed inset-0 flex items-center justify-center border-e-gray-300 z-50 bg-opacity-50 overflow-auto p-4">
       <div className="bg-white/20 backdrop-blur-md border border-white/30 text-white p-8 rounded-xl w-full max-w-md relative shadow-xl max-h-[90vh] overflow-auto">
         <button
-          onClick={onClose}
+          onClick={() => {
+            onClose();
+            navigate("/");
+          }}
           className="absolute top-2 right-3 text-black text-xl"
         >
           ✖

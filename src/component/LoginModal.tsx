@@ -28,7 +28,10 @@ function LoginModal({ onClose }: { onClose: () => void }) {
       <div className="bg-white/20 backdrop-blur-md border border-white/30 text-white p-8 rounded-xl w-[400px] relative shadow-xl">
         <button
           className="absolute top-2 right-3 text-black text-xl"
-          onClick={onClose}
+          onClick={() => {
+            onClose();
+            navigate("/");
+          }}
         >
           ✖
         </button>
@@ -72,7 +75,13 @@ function LoginModal({ onClose }: { onClose: () => void }) {
 
         <div className="mt-4 text-center text-sm text-gray-600">
           هیچ اکانتی ندارید ?{" "}
-          <span onClick={onClose} className="text-blue-600 cursor-pointer">
+          <span
+            onClick={() => {
+              onClose();
+              navigate("/register");
+            }}
+            className="text-blue-600 cursor-pointer"
+          >
             ثبت نام
           </span>
         </div>
