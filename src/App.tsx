@@ -1,5 +1,5 @@
-import Header from "./component/Header";
-import Main from "./component/Main";
+import Header from "./component/homepage/Header";
+import Main from "./component/homepage/Main";
 import { BrowserRouter, Routes, Route } from "react-router";
 
 function App() {
