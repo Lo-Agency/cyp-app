@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
-import logo from "../asset/logo.png";
+import logo from "../../asset/logo.png";
 import Nav from "./Nav";
 import LoginModal from "./LoginModal";
 import RegisterModal from "./RegisterModal";

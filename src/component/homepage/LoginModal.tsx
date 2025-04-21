@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import logo from "../asset/logo.png";
+import logo from "../../asset/logo.png";
 
 function LoginModal({ onClose }: { onClose: () => void }) {
   const [email, setEmail] = useState("");
