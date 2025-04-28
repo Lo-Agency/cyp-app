@@ -26,7 +26,7 @@ function App() {
               </>
             }
           />
-          <Route path="/Dashboard" element={<Dashbord />} />
+          <Route path="/Dashbord" element={<Dashbord />} />
         </Routes>
       </BrowserRouter>
     </>
