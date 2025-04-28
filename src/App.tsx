@@ -1,3 +1,4 @@
+import Dashbord from "./component/dashbord/Dashbord";
 import Header from "./component/homepage/Header";
 import Main from "./component/homepage/Main";
 import { BrowserRouter, Routes, Route } from "react-router";
@@ -25,6 +26,7 @@ function App() {
               </>
             }
           />
+          <Route path="/Dashbord" element={<Dashbord />} />
         </Routes>
       </BrowserRouter>
     </>
