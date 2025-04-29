@@ -1,8 +1,12 @@
 import Feature from "./component/feature";
+import Header from "./component/Header";
 
 function App() {
   return (
-    <Feature/>
+    <>
+      <Header />
+      <Feature/>
+    </>
   );
 }
 
