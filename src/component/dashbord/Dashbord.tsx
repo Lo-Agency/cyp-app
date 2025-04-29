@@ -12,7 +12,7 @@ export default function Dashbord() {
           <h1 className="text-2xl font-bold mb-4 p-6">Dashboard</h1>
         </div>
         {/* add Buttons finance */}
-        <div className="flex flex-row justify-between gap-4 p-8">
+        <div className="flex flex-row justify-start w-full gap-4 p-8">
           {buttonlist.map((item) => (
             <ButtonsCard
               key={item.title}
