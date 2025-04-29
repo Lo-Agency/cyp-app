@@ -1,8 +1,8 @@
 import ButtonsCard from "./ButtonsCard";
 const buttonlist = [
-  { title: "Income", amount: "0$" },
-  { title: "Expenses", amount: "0$" },
-  { title: "Budgeted", amount: "0$" },
+  { title: "درآمدها", amount: "0$" },
+  { title: "هزینه ها", amount: "0$" },
+  { title: "بودجه", amount: "0$" },
 ];
 export default function Dashbord() {
   return (
