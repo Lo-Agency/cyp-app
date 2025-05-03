@@ -3,6 +3,8 @@ import Feature from "./component/feature";
 import Dashbord from "./component/dashbord/Dashbord";
 import Header from "./component/homepage/Header";
 import Main from "./component/homepage/Main";
+import Footer from "./component/footer";
+
 
 function Layout({ children, defaultDropDown }: { children: React.ReactNode; defaultDropDown?: boolean }) {
   return (
@@ -10,6 +12,7 @@ function Layout({ children, defaultDropDown }: { children: React.ReactNode; defa
       <Header defaultDropDown={defaultDropDown} />
       <Feature />
       {children}
+      <Footer/>
     </>
   );
 }
