@@ -1,5 +1,6 @@
 import { useState } from "react";
 import Cards from "./Cards";
+import Modal from "./Modaltransaction";
 
 const cardlist = [
   { title: "درآمدها", amount: "0ریال" },
@@ -15,24 +16,21 @@ export default function Dashboard() {
   ]);
 
   const [showModal, setShowModal] = useState(false);
-  const [newTransaction, setNewTransaction] = useState({
-    date: "",
-    payee: "",
-    category: "",
-    amount: "",
-  });
 
-  const handleAddTransaction = () => {
-    setTransactions([
-      ...transactions,
+  const handleAddTransaction = (transaction: {
+    date: string;
+    payee: string;
+    category: string;
+    amount: string;
+  }) => {
+    setTransactions((prev) => [
+      ...prev,
       {
-        ...newTransaction,
-        id: transactions.length + 1,
-        amount: parseFloat(newTransaction.amount) || 0,
+        ...transaction,
+        id: prev.length + 1,
+        amount: parseFloat(transaction.amount), // Convert amount to number
       },
     ]);
-    setNewTransaction({ date: "", payee: "", category: "", amount: "" });
-    setShowModal(false);
   };
 
   return (
@@ -88,71 +86,12 @@ export default function Dashboard() {
         </div>
       </div>
 
-      {/* Modal */}
+      {/* استفاده از کامپوننت Modal */}
       {showModal && (
-        <div className="fixed inset-0 bg-opacity-30 backdrop-blur-sm flex items-center justify-center z-50">
-          <div className="bg-blue-300/20 backdrop-blur-md border border-white/30 text-black p-8 rounded-xl w-[400px] relative shadow-xl">
-            <h3 className="text-xl font-bold mb-4">تراکنش جدید</h3>
-
-            <input
-              type="text"
-              placeholder="تاریخ (مثلا 04/12/2024)"
-              value={newTransaction.date}
-              onChange={(e) =>
-                setNewTransaction({ ...newTransaction, date: e.target.value })
-              }
-              className="w-full mb-2 p-2 border rounded"
-            />
-
-            <input
-              type="text"
-              placeholder="پرداخت کننده (Payee)"
-              value={newTransaction.payee}
-              onChange={(e) =>
-                setNewTransaction({ ...newTransaction, payee: e.target.value })
-              }
-              className="w-full mb-2 p-2 border rounded"
-            />
-
-            <input
-              type="text"
-              placeholder="دسته بندی (مثلا Income)"
-              value={newTransaction.category}
-              onChange={(e) =>
-                setNewTransaction({
-                  ...newTransaction,
-                  category: e.target.value,
-                })
-              }
-              className="w-full mb-2 p-2 border rounded"
-            />
-
-            <input
-              type="text"
-              placeholder="مبلغ (مثلا $250.00)"
-              value={newTransaction.amount}
-              onChange={(e) =>
-                setNewTransaction({ ...newTransaction, amount: e.target.value })
-              }
-              className="w-full mb-4 p-2 border rounded"
-            />
-
-            <div className="flex justify-end gap-2">
-              <button
-                className="bg-gray-300 px-4 py-2 rounded"
-                onClick={() => setShowModal(false)}
-              >
-                انصراف
-              </button>
-              <button
-                className="bg-blue-500 text-white px-4 py-2 rounded"
-                onClick={handleAddTransaction}
-              >
-                افزودن
-              </button>
-            </div>
-          </div>
-        </div>
+        <Modal
+          onClose={() => setShowModal(false)}
+          onAdd={handleAddTransaction}
+        />
       )}
     </div>
   );
