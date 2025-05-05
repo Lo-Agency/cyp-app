@@ -51,21 +51,7 @@ export default function Dashbord() {
               افزودن تراکنش
             </button>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-            <div className="bg-white p-4 rounded-xl shadow">
-              <h3 className="text-lg font-semibold text-gray-700">درآمد کل</h3>
-              <p className="text-2xl font-bold text-green-600">12,000,000 تومان</p>
-            </div>
-            <div className="bg-white p-4 rounded-xl shadow">
-              <h3 className="text-lg font-semibold text-gray-700">هزینه کل</h3>
-              <p className="text-2xl font-bold text-red-600">8,000,000 تومان</p>
-            </div>
-            <div className="bg-white p-4 rounded-xl shadow">
-              <h3 className="text-lg font-semibold text-gray-700">بودجه باقی‌مانده</h3>
-              <p className="text-2xl font-bold text-blue-600">4,000,000 تومان</p>
-            </div>
-          </div>
-
+        
           
           <div className="bg-white p-6 rounded-xl shadow mb-6">
             <h3 className="text-lg font-semibold text-gray-700 mb-4">روند درآمد و هزینه</h3>
@@ -81,27 +67,7 @@ export default function Dashbord() {
           </div>
 
 
-          <div className="bg-white p-6 rounded-xl shadow">
-            <h3 className="text-lg font-semibold text-gray-700 mb-4">تراکنش‌های اخیر</h3>
-            <table className="w-full text-right">
-              <thead>
-                <tr className="border-b">
-                  <th className="p-2">دسته‌بندی</th>
-                  <th className="p-2">مبلغ (تومان)</th>
-                  <th className="p-2">تاریخ</th>
-                </tr>
-              </thead>
-              <tbody>
-                {transactions.map((transaction) => (
-                  <tr key={transaction.id} className="border-b">
-                    <td className="p-2">{transaction.category}</td>
-                    <td className="p-2">{transaction.amount.toLocaleString()}</td>
-                    <td className="p-2">{transaction.date}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+          
         </div>
       </div>
     </div>
