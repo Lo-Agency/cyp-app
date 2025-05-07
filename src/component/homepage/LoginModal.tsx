@@ -3,31 +3,39 @@ import { useNavigate } from "react-router-dom";
 import logo from "../../asset/logo.png";
 
 function LoginModal({ onClose }: { onClose: () => void }) {
+  const [emailError, setEmailError] = useState("");
+  const [passwordError, setPasswordError] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
 
   const navigate = useNavigate();
-
   const handleLogin = () => {
-    setError("");
+    setEmailError("");
+    setPasswordError("");
 
-    if (!email || !password) {
-      setError("ایمیل و رمز عبور نباید خالی باشند.");
-      return;
+    let valid = true;
+
+    if (!email) {
+      setEmailError("ایمیل نباید خالی باشد.");
+      valid = false;
+    } else {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(email)) {
+        setEmailError("فرمت ایمیل معتبر نیست.");
+        valid = false;
+      }
     }
 
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
-      setError("ایمیل وارد شده معتبر نیست.");
-      return;
+    if (!password) {
+      setPasswordError("رمز عبور نباید خالی باشد.");
+      valid = false;
+    } else if (password.length < 6) {
+      setPasswordError("رمز عبور باید حداقل ۶ کاراکتر باشد.");
+      valid = false;
     }
 
-    if (password.length < 6) {
-      setError("رمز عبور باید حداقل ۶ کاراکتر باشد.");
-      return;
-    }
+    if (!valid) return;
 
     setLoading(true);
     setTimeout(() => {
@@ -61,20 +69,24 @@ function LoginModal({ onClose }: { onClose: () => void }) {
         <input
           type="email"
           placeholder="ایمیل خود را وارد کنید"
-          className="w-full mb-4 px-4 py-2 border text-gray-950 rounded-md bg-gray-50"
+          className="w-full mb-1 px-4 py-2 border text-gray-950 rounded-md bg-gray-50"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
         />
+        {emailError && (
+          <div className="text-red-500 text-sm mb-3">{emailError}</div>
+        )}
 
         <input
           type="password"
           placeholder="پسورد خودرا وارد کنید"
-          className="w-full mb-4 px-4 py-2 border text-gray-900 rounded-md bg-gray-50"
+          className="w-full mb-1 px-4 py-2 border text-gray-900 rounded-md bg-gray-50"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
         />
-
-        {error && <div className="text-red-500 text-sm mb-3">{error}</div>}
+        {passwordError && (
+          <div className="text-red-500 text-sm mb-3">{passwordError}</div>
+        )}
 
         <button
           onClick={handleLogin}
