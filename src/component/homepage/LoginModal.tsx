@@ -12,15 +12,28 @@ function LoginModal({ onClose }: { onClose: () => void }) {
 
   const handleLogin = () => {
     setError("");
+
+    if (!email || !password) {
+      setError("ایمیل و رمز عبور نباید خالی باشند.");
+      return;
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      setError("ایمیل وارد شده معتبر نیست.");
+      return;
+    }
+
+    if (password.length < 6) {
+      setError("رمز عبور باید حداقل ۶ کاراکتر باشد.");
+      return;
+    }
+
     setLoading(true);
     setTimeout(() => {
       setLoading(false);
-      if (email && password) {
-        navigate("/Dashbord");
-      } else {
-        setError("ایمیل یا رمز عبور وارد نشده است.");
-      }
-    }, 1500);
+      navigate("/Dashbord");
+    }, 1000);
   };
 
   return (
@@ -70,7 +83,7 @@ function LoginModal({ onClose }: { onClose: () => void }) {
             loading ? "bg-gray-400 cursor-not-allowed" : "bg-teal-800"
           }`}
         >
-          {loading ? "در حال ورود..." : "Log in"}
+          {loading ? "در حال ورود..." : "ورود"}
         </button>
 
         <div className="mt-4 text-center text-sm text-gray-600">

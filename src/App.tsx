@@ -18,6 +18,15 @@ function App() {
             }
           />
           <Route
+            path="/LoginModal"
+            element={
+              <>
+                <Header defaultDropDown={true} />
+                <Main />
+              </>
+            }
+          />
+          <Route
             path="/register"
             element={
               <>
