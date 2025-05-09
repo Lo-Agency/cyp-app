@@ -2,36 +2,44 @@ import { useState } from "react";
 import Cards from "./Cards";
 import Modal from "./Modaltransaction";
 
-const cardlist = [
-  { title: "درآمدها", amount: "0ریال" },
-  { title: "هزینه ها", amount: "0ریال" },
-  { title: "بودجه", amount: "0ریال" },
-];
+type Transaction = {
+  id: number;
+  category: string;
+  amount: number;
+  date: string;
+  type: "income" | "expense";
+};
 
 export default function Dashboard() {
-  const [transactions, setTransactions] = useState([
-    { id: 1, category: "خوراک", amount: 500, date: "1404/01/01" },
-    { id: 2, category: "حمل‌ونقل", amount: 200, date: "1404/01/02" },
-    { id: 3, category: "سرگرمی", amount: 1000, date: "1404/01/03" },
-  ]);
-
+  const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [showModal, setShowModal] = useState(false);
 
   const handleAddTransaction = (transaction: {
     date: string;
     payee: string;
     category: string;
-    amount: string;
+    amount: number;
+    type: "income" | "expense";
   }) => {
     setTransactions((prev) => [
       ...prev,
       {
         ...transaction,
         id: prev.length + 1,
-        amount: parseFloat(transaction.amount), // Convert amount to number
       },
     ]);
   };
+
+  // محاسبه داینامیک
+  const totalIncome = transactions
+    .filter((t) => t.type === "income")
+    .reduce((sum, t) => sum + t.amount, 0);
+
+  const totalExpense = transactions
+    .filter((t) => t.type === "expense")
+    .reduce((sum, t) => sum + t.amount, 0);
+
+  const budget = totalIncome - totalExpense;
 
   return (
     <div className="min-h-screen bg-gray-100">
@@ -40,9 +48,15 @@ export default function Dashboard() {
 
         <div className="flex-1 flex flex-col">
           <div className="flex flex-row justify-between gap-4 p-8">
-            {cardlist.map((item) => (
-              <Cards key={item.title} title={item.title} amount={item.amount} />
-            ))}
+            <Cards
+              title="درآمدها"
+              amount={`${totalIncome.toLocaleString()} تومان`}
+            />
+            <Cards
+              title="هزینه ها"
+              amount={`${totalExpense.toLocaleString()} تومان`}
+            />
+            <Cards title="بودجه" amount={`${budget.toLocaleString()} تومان`} />
           </div>
 
           <div className="p-8">
@@ -61,32 +75,36 @@ export default function Dashboard() {
               <h3 className="text-lg font-semibold text-gray-700 mb-4">
                 تراکنش‌های اخیر
               </h3>
-              <table className="w-full text-right">
-                <thead>
-                  <tr className="border-b">
-                    <th className="p-2">دسته‌بندی</th>
-                    <th className="p-2">مبلغ (تومان)</th>
-                    <th className="p-2">تاریخ</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {transactions.map((transaction) => (
-                    <tr key={transaction.id} className="border-b">
-                      <td className="p-2">{transaction.category}</td>
-                      <td className="p-2">
-                        {transaction.amount.toLocaleString()}
-                      </td>
-                      <td className="p-2">{transaction.date}</td>
+              {transactions.length === 0 ? (
+                <p className="text-gray-500">تراکنشی ثبت نشده است.</p>
+              ) : (
+                <table className="w-full text-right">
+                  <thead>
+                    <tr className="border-b">
+                      <th className="p-2">دسته‌بندی</th>
+                      <th className="p-2">مبلغ (تومان)</th>
+                      <th className="p-2">تاریخ</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody>
+                    {transactions.map((transaction) => (
+                      <tr key={transaction.id} className="border-b">
+                        <td className="p-2">{transaction.category}</td>
+                        <td className="p-2">
+                          {transaction.amount.toLocaleString()}
+                        </td>
+                        <td className="p-2">{transaction.date}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              )}
             </div>
           </div>
         </div>
       </div>
 
-      {/* استفاده از کامپوننت Modal */}
+      {/* مدال اضافه کردن تراکنش */}
       {showModal && (
         <Modal
           onClose={() => setShowModal(false)}

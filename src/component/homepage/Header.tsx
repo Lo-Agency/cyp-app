@@ -35,7 +35,10 @@ function Header({ defaultDropDown }: { defaultDropDown?: boolean }) {
   }, []);
 
   return (
-    <header className="flex justify-between items-center px-10 py-4 bg-white relative">
+    <header
+      dir="ltr"
+      className="flex justify-between items-center px-10 py-4 bg-white relative"
+    >
       <div className="flex items-center space-x-2">
         <img src={logo} alt="Logo" className="w-28 h-auto" />
       </div>
