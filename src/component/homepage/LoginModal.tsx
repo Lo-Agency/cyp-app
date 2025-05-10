@@ -16,7 +16,7 @@ function LoginModal({ onClose }: { onClose: () => void }) {
     setTimeout(() => {
       setLoading(false);
       if (email && password) {
-        navigate("/Dashbord");
+        navigate("/Dashboard");
       } else {
         setError("ایمیل یا رمز عبور وارد نشده است.");
       }

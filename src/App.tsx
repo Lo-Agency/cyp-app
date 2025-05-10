@@ -1,6 +1,6 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Feature from "./component/homepage/feature";
-import Dashbord from "./component/dashbord/Dashbord";
+import Dashboard from "./component/dashboard/Dashboard";
 import Header from "./component/homepage/Header";
 import Main from "./component/homepage/Main";
 import Footer from "./component/homepage/footer";
@@ -42,7 +42,7 @@ function App() {
             </Layout>
           }
         />
-        <Route path="/Dashbord" element={<Dashbord />} />
+        <Route path="/Dashboard" element={<Dashboard />} />
       </Routes>
     </BrowserRouter>
   );
