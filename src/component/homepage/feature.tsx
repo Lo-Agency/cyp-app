@@ -1,26 +1,55 @@
-function Feature() {
-    return (
-        <div className="py-16 bg-gray-50 text-center">
-        <h1 className="text-3xl font-bold text-gray-800 mb-10">ویژگی‌ها</h1>
-        <div className="grid grid-cols-3 md:grid-cols-2 lg:grid-cols-3  gap-8 px-4 max-w-6xl mx-auto">
-            <div className="bg-white p-6 rounded-2xl shadow-md hover:shadow-xl transition w-full mx-auto">
-                <img src="src/asset/calculate.svg" alt="" className="w-16 h-16 mx-auto mb-4" />
-                <h2 className="text-xl font-semibold text-gray-700 mb-2">دسته‌بندی تراکنش‌ها</h2>
-                <p className="text-gray-600 text-sm">هزینه‌هات رو به‌صورت خودکار در دسته‌های مختلف مثل خوراک، حمل‌ونقل و سرگرمی طبقه‌بندی کن</p>
-            </div>
-            <div className="bg-white p-6 rounded-2xl shadow-md hover:shadow-xl transition w-full mx-auto">
-            <img src="src/asset/money.svg" alt="" className="w-16 h-16 mx-auto mb-4" />
-                <h2 className="text-xl font-semibold text-gray-700 mb-2">بودجه‌بندی و مدیریت هزینه</h2>
-                <p className="text-gray-600 text-sm">برای هر دسته‌ی مالی سقف تعیین کن و اپ بهت کمک می‌کنه تو چارچوب بودجه خرج کنی</p>
-            </div>
-            <div className="bg-white p-6 rounded-2xl shadow-md hover:shadow-xl transition w-full mx-auto">
-                <img src="src/asset/chart.svg" alt="" className="w-16 h-16 mx-auto mb-4" />
-                <h2 className="text-xl font-semibold text-gray-700 mb-2">گزارش‌ها و نمودارهای تحلیلی</h2>
-                <p className="text-gray-600 text-sm">با گراف‌های ساده و جذاب، روند درآمد و هزینه‌هات رو زیر ذره‌بین ببر</p>
-                </div>
-        </div>
+import { section } from "framer-motion/client";
 
-        </div>
+function Feature() {
+    const features = [
+        {
+            icon: "src/asset/money.svg",
+            title: "مدیریت دخل و خرج",
+            description: ".با ابزارهای ساده, هزینه‌ها و درآمدهای خود را به راحتی مدیریت کنید",
+        },
+        {
+            icon: "src/asset/chart.svg",
+            title: "گزارش‌های مالی",
+            description: "گزارش‌های دقیق و نمودارهای بصری برای تحلیل مالی شما.",
+        },
+        {
+            icon: "src/asset/calculate.svg",
+            title: "دسته‌بندی تراکنش‌ها",
+            description: "هزینه‌هات رو به‌صورت خودکار در دسته‌های مختلف مثل خوراک، حمل‌ونقل و سرگرمی طبقه‌بندی کن."
+        },
+    ];
+    return (
+        <section className="py-12 md:py-16 bg-background">
+            <div className="max-w-6xl mx-auto px-4 sm:px-6">
+                <div className="text-center mb-10">
+                    <h2 className="text-2xl md:text-3xl font-bold text-primary"> انتخاب شماست؟ CYP چرا</h2>
+                    <p className="text-base md:text-lg text-secondary mt-2 max-w-2xl mx-auto">
+                        ابزار مالی ساده و قدرتمند برای مدیریت بهتر پول شما
+                    </p>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {features.map((feature, index) => (
+                        <div
+                            key={index}
+                            className="bg-white rounded-xl shadow-md transition-all duration-300 ease-in-out hover:-translate-y-1 hover:shadow-lg p-6 text-center animate-fade-in"
+                            style={{ animationDelay: `${index * 0.1}s` }}
+                        >
+                            <img
+                                src={feature.icon}
+                                alt={feature.title}
+                                className="w-12 h-12 mx-auto mb-4 text-primary"
+                            />
+                            <h3 className="text-lg md:text-xl font-semibold text-primary mb-2">
+                                {feature.title}
+                            </h3>
+                            <p className="text-base text-secondary">
+                                {feature.description}
+                            </p>
+                        </div>
+                    ))}
+                </div>
+            </div>
+        </section>
     )
 }
 export default Feature;
