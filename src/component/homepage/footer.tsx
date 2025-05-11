@@ -22,7 +22,6 @@ function Footer() {
           <img src="src/asset/logo.png" alt="لوگو CYP" className="w-28 h-auto" />
         </div>
 
-        {/* لینک‌های ناوبری */}
         <div className="flex flex-col md:flex-row justify-center gap-4 text-sm">
           {navLinks.map((link, index) => (
             <Link
