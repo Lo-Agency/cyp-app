@@ -13,12 +13,13 @@ function Layout({
   defaultDropDown?: boolean;
 }) {
   return (
-    <>
+    <div className="flex flex-col min-h-screen">
       <Header defaultDropDown={defaultDropDown} />
       <Feature />
-      {children}
+      <main className="flex-grow">{children}</main>
+      <div className="h-1 bg-gradient-to-r from-primary to-secondary my-6 mx-4 animate-fade-in" />
       <Footer />
-    </>
+    </div>
   );
 }
 

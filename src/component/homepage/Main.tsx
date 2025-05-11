@@ -1,6 +1,6 @@
 function Main() {
   return (
-    <div className="flex flex-col min-h-screen bg-background">
+    <div className="flex flex-col bg-background">
       <div className="flex flex-col justify-center items-center text-center px-4 sm:px-6 md:px-8 py-8 md:py-12 bg-accent mt-20">
         <div className="max-w-3xl mx-auto">
           <h1
