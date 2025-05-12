@@ -1,7 +1,7 @@
 import { defineConfig } from 'vite'
 import tailwindcss from '@tailwindcss/vite'
 export default defineConfig({
-  base: '/', // for GitHub pages
+  base: '/cyp-app/', // for GitHub pages
   plugins: [
     tailwindcss(),
   ],
