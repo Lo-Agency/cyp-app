@@ -1,8 +1,22 @@
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
+import { useState } from "react";
 
 function RegisterModal({ onClose }: { onClose: () => void }) {
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
+  });
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
   const navigate = useNavigate();
+  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+  };
   return (
     <div className="fixed inset-0 flex items-center justify-center border-e-gray-300 z-50 bg-opacity-50 overflow-auto p-4">
       <div className="bg-white/20 backdrop-blur-md border border-white/30 text-white p-8 rounded-xl w-full max-w-md relative shadow-xl max-h-[90vh] overflow-auto">
@@ -21,13 +35,16 @@ function RegisterModal({ onClose }: { onClose: () => void }) {
         >
           ایجاد اکانت جدید
         </h2>
-        <form className="space-y-4">
+        <form className="space-y-4" onSubmit={handleSubmit}>
           <div>
             <label className="block text-sm text-black font-medium">نام</label>
             <input
               type="text"
+              name="name"
               placeholder="لطفا نام خود را وارد کنید"
               className="w-full px-4 py-2 mt-1 rounded-xl text-gray-900 bg-gray-100 outline-none focus:ring-2 focus:ring-black/10"
+              value={formData.name}
+              onChange={handleChange}
             />
           </div>
           <div>
@@ -36,8 +53,11 @@ function RegisterModal({ onClose }: { onClose: () => void }) {
             </label>
             <input
               type="email"
+              name="email"
               placeholder="لطفا ایمیل خود را وارد کنید"
               className="w-full px-4 py-2 mt-1 rounded-xl text-gray-900 bg-gray-100 outline-none focus:ring-2 focus:ring-black/10"
+              value={formData.email}
+              onChange={handleChange}
             />
           </div>
           <div>
@@ -47,8 +67,11 @@ function RegisterModal({ onClose }: { onClose: () => void }) {
             <div className="relative">
               <input
                 type="password"
+                name="password"
                 placeholder="لطفا رمزعبور خود را وارد کنید"
                 className="w-full px-4 py-2 mt-1 rounded-xl text-gray-900 bg-gray-100 outline-none focus:ring-2 focus:ring-black/10"
+                value={formData.password}
+                onChange={handleChange}
               />
             </div>
           </div>
@@ -58,8 +81,11 @@ function RegisterModal({ onClose }: { onClose: () => void }) {
             </label>
             <input
               type="password"
+              name="confirmPassword"
               placeholder="لطفا رمزعبور خود را دوباره وارد کنید"
               className="w-full px-4 py-2 mt-1 rounded-xl text-gray-900 bg-gray-100 outline-none focus:ring-2 focus:ring-black/10"
+              value={formData.confirmPassword}
+              onChange={handleChange}
             />
           </div>
           <div className="flex text-black items-start gap-2 text-sm">
