@@ -20,7 +20,7 @@ function App() {
             element={
               <>
                 <Header />
-                <Main onLoginClick={() => setModalType("login")} />{" "}
+                <Main />
               </>
             }
           />
