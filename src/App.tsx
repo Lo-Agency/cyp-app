@@ -5,6 +5,7 @@ import Main from "./component/homepage/Main";
 import LoginModal from "./component/homepage/LoginModal";
 import RegisterModal from "./component/homepage/RegisterModal";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import NotFound from "./component/NotFound";
 
 function App() {
   const [modalType, setModalType] = useState<null | "login" | "register">(null);
@@ -25,6 +26,7 @@ function App() {
             }
           />
           <Route path="/Dashbord" element={<Dashbord />} />
+          <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
 
