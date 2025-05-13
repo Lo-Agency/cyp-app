@@ -2,7 +2,13 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import logo from "../../asset/logo.png";
 
-function LoginModal({ onClose }: { onClose: () => void }) {
+function LoginModal({
+  onClose,
+  onSwitchToRegister,
+}: {
+  onClose: () => void;
+  onSwitchToRegister: () => void;
+}) {
   const [emailError, setEmailError] = useState("");
   const [passwordError, setPasswordError] = useState("");
   const [email, setEmail] = useState("");
@@ -101,10 +107,7 @@ function LoginModal({ onClose }: { onClose: () => void }) {
         <div className="mt-4 text-center text-sm text-gray-600">
           هیچ اکانتی ندارید ?{" "}
           <span
-            onClick={() => {
-              onClose();
-              navigate("/register");
-            }}
+            onClick={onSwitchToRegister}
             className="text-blue-600 cursor-pointer"
           >
             ثبت نام

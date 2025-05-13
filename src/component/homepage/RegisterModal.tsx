@@ -1,8 +1,13 @@
-import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 
-function RegisterModal({ onClose }: { onClose: () => void }) {
+function RegisterModal({
+  onClose,
+  onSwitchToLogin,
+}: {
+  onClose: () => void;
+  onSwitchToLogin: () => void;
+}) {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -133,12 +138,12 @@ function RegisterModal({ onClose }: { onClose: () => void }) {
         </div>
         <p className="text-center text-sm mt-4">
           Already have an account?{" "}
-          <Link
-            to="/LoginModal"
+          <span
+            onClick={onSwitchToLogin}
             className="flex items-center justify-center w-full bg-cyan-900 text-white py-2 rounded-xl hover:bg-cyan-800 transition"
           >
             ورود
-          </Link>
+          </span>
         </p>
       </div>
     </div>
