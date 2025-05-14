@@ -77,7 +77,7 @@ export default function Modal({ onClose, onAdd }: ModalProps) {
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-30 backdrop-blur-sm flex items-center justify-center z-50">
+    <div className="fixed inset-0 bg-opacity-30 backdrop-blur-sm flex items-center justify-center z-50">
       <div className="bg-white rounded-2xl shadow-xl w-[400px] p-6 space-y-4 text-right">
         <h3 className="text-xl font-bold">تراکنش جدید</h3>
 
