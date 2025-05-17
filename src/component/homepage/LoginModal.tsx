@@ -46,7 +46,7 @@ function LoginModal({
     setLoading(true);
     setTimeout(() => {
       setLoading(false);
-      navigate("/Dashbord");
+      navigate("/dashboard");
     }, 1000);
   };
 
@@ -65,10 +65,10 @@ function LoginModal({
         <div>
           <img src={logo} alt="logo" className=" block w-28 h-20 " />
         </div>
-        <h2 dir="rtl" className="text-2xl font-semibold mb-1">
+        <h2 dir="rtl" className="text-2xl text-black font-semibold mb-1">
           خوش آمدید!
         </h2>
-        <p className="text-sm text-white mb-6" dir="rtl">
+        <p className="text-sm text-black mb-6" dir="rtl">
           لطفا اطلاعات خود را در کادر پایین وارد کنید
         </p>
 

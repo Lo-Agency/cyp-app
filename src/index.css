@@ -1,8 +1,188 @@
+@import "tailwindcss";
+
 @font-face {
   font-family: "Yekan";
   src: url("src/asset/font/Yekan.ttf") format("truetype");
 }
+
 body {
   font-family: "Yekan";
 }
-@import "tailwindcss";
+
+
+:root {
+  --color-primary: #27548A;
+  /* دکمه‌ها و لینک‌ها */
+  --color-secondary: #DDA853;
+  /*hover*/
+  --color-background: #F8FAFC;
+  /* پس‌زمینه */
+  --color-accent: #E2E8F0;
+  /*فوتر ا */
+  --color-text-primary: #183B4E;
+  /*  تیترها */
+  --color-text-secondary: #4B5E6F;
+  /*  توضیحات */
+  --color-error: #F87171;
+  /*  خطاها */
+  --color-highlight: #FCD34D;
+  /*  هایلایت */
+  --color-purple-accent: #A78BFA;
+  /*  افکت‌های خاص */
+}
+
+body {
+  background-color: var(--color-background);
+  color: var(--color-text-primary);
+  font-family: "Yekan", sans-serif;
+}
+
+
+.nav-link {
+  position: relative;
+  color: var(--color-text-primary);
+  font-weight: 500;
+  padding: 0.5rem 0;
+  transition: color 0.3s ease;
+}
+
+.nav-link:hover {
+  color: var(--color-secondary);
+}
+
+.nav-link::after {
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 2px;
+  bottom: 0;
+  right: 0;
+  background-color: var(--color-secondary);
+  transition: width 0.3s ease;
+}
+
+.nav-link:hover::after {
+  width: 100%;
+}
+
+button.hero-button {
+  background-color: var(--color-primary);
+  color: white;
+  padding: 0.75rem 2.5rem;
+  border-radius: 2rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  transition: all 0.3s ease;
+}
+
+button.hero-button:hover {
+  background-color: var(--color-secondary);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+  transform: scale(1.05);
+}
+
+
+/* اضافی برای دکمه‌ها  */
+button.primary {
+  background-color: var(--color-primary);
+  color: white;
+  padding: 0.625rem 1.75rem;
+  border-radius: 1.5rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+button.primary:hover {
+  background-color: var(--color-secondary);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  transform: translateY(-1px);
+}
+
+button.secondary {
+  background-color: transparent;
+  color: var(--color-primary);
+  padding: 0.625rem 1.75rem;
+  border: 2px solid var(--color-primary);
+  border-radius: 1.5rem;
+  transition: all 0.3s ease;
+}
+
+button.secondary:hover {
+  background-color: var(--color-secondary);
+  color: white;
+  border-color: var(--color-secondary);
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in {
+  animation: fade-in 0.3s ease-out forwards;
+}
+.bg-footer {
+  background-color: var(--color-footer-bg);
+}
+.footer-link {
+  position: relative;
+  color: var(--color-footer-text);
+  font-weight: 500;
+  padding: 0.5rem 0;
+  transition: color 0.3s ease;
+}
+
+.footer-link:hover {
+  color: var(--color-secondary);
+}
+
+.footer-link::after {
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 2px;
+  bottom: 0;
+  right: 0;
+  background-color: var(--color-secondary);
+  transition: width 0.3s ease;
+}
+
+.footer-link:hover::after {
+  width: 100%;
+}
+/* برای هماهنگی با Tailwind */
+@layer utilities {
+  .bg-primary {
+    background-color: var(--color-primary);
+  }
+
+  .bg-secondary {
+    background-color: var(--color-secondary);
+  }
+
+  .bg-background {
+    background-color: var(--color-background);
+  }
+
+  .bg-accent {
+    background-color: var(--color-accent);
+  }
+
+  .text-primary {
+    color: var(--color-text-primary);
+  }
+
+  .text-secondary {
+    color: var(--color-text-secondary);
+  }
+
+  .text-error {
+    color: var(--color-error);
+  }
+}

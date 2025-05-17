@@ -1,4 +1,4 @@
-import Dashbord from "./component/dashbord/Dashbord";
+import Dashboard from "./component/dashboard/Dashboard";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import NotFound from "./component/NotFound";
 import HomePage from "./component/homepage/Index";
@@ -9,7 +9,7 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<HomePage />} />
-          <Route path="/dashbord" element={<Dashbord />} />
+          <Route path="/dashboard" element={<Dashboard />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>

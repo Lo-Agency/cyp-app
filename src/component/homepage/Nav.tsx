@@ -1,17 +1,18 @@
 function Nav() {
   const navItems = [
-    { href: "#", label: "درباره ما" },
-    { href: "#", label: "ویژگی‌ها" },
+    { href: "#", label: "فرصت های شغلی " },
     { href: "#", label: "تماس با ما" },
+    { href: "#", label: "ویژگی‌ها" },
+    { href: "#", label: "درباره ما" },
   ];
   return (
     <nav>
-      <ul className="flex items-center space-x-8 text-blue-600 text-sm font-medium">
+      <ul className="flex items-center gap-4 lg:gap-6">
         {navItems.map((item, index) => (
           <li key={index}>
             <a
               href={item.href}
-              className="hover:text-blue-800 transition-colors duration-200"
+              className="nav-link text-base"
             >
               {item.label}
             </a>

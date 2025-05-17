@@ -41,11 +41,33 @@ function Header({ defaultDropDown }: { defaultDropDown?: boolean }) {
         <img src={logo} alt="Logo" className="w-28 h-auto" />
       </div>
 
-      <div className="flex items-center space-x-6">
-        <div className="hidden md:block">
+      <div className="flex items-center gap-4 md:gap-8">
+        <div className="hidden md:flex">
           <Nav />
         </div>
-        <button className="text-blue-600" onClick={handleDropdown}>
+
+        {/* اینو گذاشتم فقط برای دسکتاپ */}
+        <div className="hidden md:flex gap-3">
+          <button
+            onClick={() => setShowLogin(true)}
+            className="text-primary hover:text-secondary font-medium px-4 py-1.5 rounded-md transition-colors"
+          >
+            ورود
+          </button>
+          <button
+            onClick={() => {
+              setShowRegister(true);
+            }}
+            className="bg-primary text-white font-medium px-4 py-1.5 rounded-md hover:bg-secondary transition-colors"
+          >
+            ثبت‌ نام
+          </button>
+        </div>
+        {/* این همبرگر منو که تو موبایل فقط نشون بده */}
+        <button
+          className="md:hidden text-primary hover:text-secondary p-1"
+          onClick={handleDropdown}
+        >
           <svg
             xmlns="http://www.w3.org/2000/svg"
             className="h-6 w-6"
@@ -66,25 +88,29 @@ function Header({ defaultDropDown }: { defaultDropDown?: boolean }) {
       {openDropdown && (
         <div
           ref={dropRef}
-          className="absolute top-24 right-12 bg-white shadow-lg rounded-md w-48 py-2 z-10"
+          className="absolute top-16 right-4 bg-background shadow-lg rounded-lg w-56 py-3 animate-fade-in md:hidden"
         >
           <button
-            onClick={() => setShowLogin(true)}
-            className="block w-full text-right px-4 py-2 text-lg text-blue-900 hover:bg-gray-100 after:content-[''] after:block after:h-px after:bg-gray-300 after:my-2"
+            onClick={() => {
+              setShowLogin(true);
+              setOpenDropdown(false);
+            }}
+            className="block w-full text-right px-4 py-2 text-text-primary hover:bg-accent hover:text-primary"
           >
-            ورود / خروج
+            ورود
           </button>
           <button
             onClick={() => {
               setShowRegister(true);
             }}
-            className="block w-full text-right px-4 py-2 text-lg text-blue-900 hover:bg-gray-100"
+            className="block w-full text-right px-4 py-2 text-text-primary hover:bg-accent hover:text-primary"
           >
             ثبت نام
           </button>
           <Link
             to="/careers"
-            className="block w-full text-right px-4 py-2 text-lg text-blue-900 hover:bg-gray-100"
+            onClick={() => setOpenDropdown(false)}
+            className="block w-full text-right px-4 py-2 text-text-primary hover:bg-accent hover:text-primary"
           >
             فرصت‌های شغلی
           </Link>
