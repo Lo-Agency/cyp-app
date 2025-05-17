@@ -4,19 +4,16 @@ import logo from "../../asset/logo.png";
 import Nav from "./Nav";
 import LoginModal from "./LoginModal";
 import RegisterModal from "./RegisterModal";
-import { useNavigate } from "react-router-dom";
 
 function Header({ defaultDropDown }: { defaultDropDown?: boolean }) {
   const [openDropdown, setOpenDropdown] = useState(false);
   const [showLogin, setShowLogin] = useState(false);
   const [showRegister, setShowRegister] = useState(false);
   const dropRef = useRef<HTMLDivElement | null>(null);
-  const navigate = useNavigate();
 
   useEffect(() => {
     setShowRegister(defaultDropDown || false);
   }, [defaultDropDown]);
-
 
   const handleDropdown = () => {
     setOpenDropdown(!openDropdown);
@@ -36,9 +33,12 @@ function Header({ defaultDropDown }: { defaultDropDown?: boolean }) {
   }, []);
 
   return (
-    <header className="flex justify-between items-center px-4 md:px-8 py-4 bg-background shadow-sm relative z-20">
-      <div className="flex items-center">
-        <img src={logo} alt="Logo" className="w-20 md:w-24 h-auto" />
+    <header
+      dir="ltr"
+      className="flex justify-between items-center px-10 py-4 bg-white relative"
+    >
+      <div className="flex items-center space-x-2">
+        <img src={logo} alt="Logo" className="w-28 h-auto" />
       </div>
 
       <div className="flex items-center gap-4 md:gap-8">
@@ -57,7 +57,6 @@ function Header({ defaultDropDown }: { defaultDropDown?: boolean }) {
           <button
             onClick={() => {
               setShowRegister(true);
-              navigate("/register");
             }}
             className="bg-primary text-white font-medium px-4 py-1.5 rounded-md hover:bg-secondary transition-colors"
           >
@@ -65,7 +64,10 @@ function Header({ defaultDropDown }: { defaultDropDown?: boolean }) {
           </button>
         </div>
         {/* این همبرگر منو که تو موبایل فقط نشون بده */}
-        <button className="md:hidden text-primary hover:text-secondary p-1" onClick={handleDropdown}>
+        <button
+          className="md:hidden text-primary hover:text-secondary p-1"
+          onClick={handleDropdown}
+        >
           <svg
             xmlns="http://www.w3.org/2000/svg"
             className="h-6 w-6"
@@ -90,7 +92,7 @@ function Header({ defaultDropDown }: { defaultDropDown?: boolean }) {
         >
           <button
             onClick={() => {
-              setShowLogin(true)
+              setShowLogin(true);
               setOpenDropdown(false);
             }}
             className="block w-full text-right px-4 py-2 text-text-primary hover:bg-accent hover:text-primary"
@@ -100,8 +102,6 @@ function Header({ defaultDropDown }: { defaultDropDown?: boolean }) {
           <button
             onClick={() => {
               setShowRegister(true);
-              navigate("/register");
-              setOpenDropdown(false);
             }}
             className="block w-full text-right px-4 py-2 text-text-primary hover:bg-accent hover:text-primary"
           >
@@ -116,8 +116,24 @@ function Header({ defaultDropDown }: { defaultDropDown?: boolean }) {
           </Link>
         </div>
       )}
-      {showLogin && <LoginModal onClose={() => setShowLogin(false)} />}
-      {showRegister && <RegisterModal onClose={() => setShowRegister(false)} />}
+      {showLogin && (
+        <LoginModal
+          onClose={() => setShowLogin(false)}
+          onSwitchToRegister={() => {
+            setShowLogin(false);
+            setShowRegister(true);
+          }}
+        />
+      )}
+      {showRegister && (
+        <RegisterModal
+          onClose={() => setShowRegister(false)}
+          onSwitchToLogin={() => {
+            setShowRegister(false);
+            setShowLogin(true);
+          }}
+        />
+      )}
     </header>
   );
 }

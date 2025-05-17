@@ -2,25 +2,52 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import logo from "../../asset/logo.png";
 
-function LoginModal({ onClose }: { onClose: () => void }) {
+function LoginModal({
+  onClose,
+  onSwitchToRegister,
+}: {
+  onClose: () => void;
+  onSwitchToRegister: () => void;
+}) {
+  const [emailError, setEmailError] = useState("");
+  const [passwordError, setPasswordError] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
 
   const navigate = useNavigate();
-
   const handleLogin = () => {
-    setError("");
+    setEmailError("");
+    setPasswordError("");
+
+    let valid = true;
+
+    if (!email) {
+      setEmailError("ایمیل نباید خالی باشد.");
+      valid = false;
+    } else {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(email)) {
+        setEmailError("فرمت ایمیل معتبر نیست.");
+        valid = false;
+      }
+    }
+
+    if (!password) {
+      setPasswordError("رمز عبور نباید خالی باشد.");
+      valid = false;
+    } else if (password.length < 6) {
+      setPasswordError("رمز عبور باید حداقل ۶ کاراکتر باشد.");
+      valid = false;
+    }
+
+    if (!valid) return;
+
     setLoading(true);
     setTimeout(() => {
       setLoading(false);
-      if (email && password) {
-        navigate("/Dashboard");
-      } else {
-        setError("ایمیل یا رمز عبور وارد نشده است.");
-      }
-    }, 1500);
+      navigate("/dashboard");
+    }, 1000);
   };
 
   return (
@@ -38,30 +65,34 @@ function LoginModal({ onClose }: { onClose: () => void }) {
         <div>
           <img src={logo} alt="logo" className=" block w-28 h-20 " />
         </div>
-        <h2 dir="rtl" className="text-2xl font-semibold mb-1">
+        <h2 dir="rtl" className="text-2xl text-black font-semibold mb-1">
           خوش آمدید!
         </h2>
-        <p className="text-sm text-white mb-6" dir="rtl">
+        <p className="text-sm text-black mb-6" dir="rtl">
           لطفا اطلاعات خود را در کادر پایین وارد کنید
         </p>
 
         <input
           type="email"
           placeholder="ایمیل خود را وارد کنید"
-          className="w-full mb-4 px-4 py-2 border text-gray-950 rounded-md bg-gray-50"
+          className="w-full mb-1 px-4 py-2 border text-gray-950 rounded-md bg-gray-50"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
         />
+        {emailError && (
+          <div className="text-red-500 text-sm mb-3">{emailError}</div>
+        )}
 
         <input
           type="password"
           placeholder="پسورد خودرا وارد کنید"
-          className="w-full mb-4 px-4 py-2 border text-gray-900 rounded-md bg-gray-50"
+          className="w-full mb-1 px-4 py-2 border text-gray-900 rounded-md bg-gray-50"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
         />
-
-        {error && <div className="text-red-500 text-sm mb-3">{error}</div>}
+        {passwordError && (
+          <div className="text-red-500 text-sm mb-3">{passwordError}</div>
+        )}
 
         <button
           onClick={handleLogin}
@@ -70,16 +101,13 @@ function LoginModal({ onClose }: { onClose: () => void }) {
             loading ? "bg-gray-400 cursor-not-allowed" : "bg-teal-800"
           }`}
         >
-          {loading ? "در حال ورود..." : "Log in"}
+          {loading ? "در حال ورود..." : "ورود"}
         </button>
 
         <div className="mt-4 text-center text-sm text-gray-600">
           هیچ اکانتی ندارید ?{" "}
           <span
-            onClick={() => {
-              onClose();
-              navigate("/register");
-            }}
+            onClick={onSwitchToRegister}
             className="text-blue-600 cursor-pointer"
           >
             ثبت نام

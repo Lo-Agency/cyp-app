@@ -8,3 +8,4 @@ createRoot(document.getElementById("root")!).render(
     <App />
   </StrictMode>
 );
+document.getElementsByTagName("html")[0].setAttribute("dir", "rtl");
