@@ -12,6 +12,7 @@ const HomePage = () => {
   return (
     <>
       <Header />
+      <Feature />
       <Main setModalType={setModalType} />
       {modalType === "login" && (
         <LoginModal
@@ -26,7 +27,6 @@ const HomePage = () => {
           onSwitchToLogin={() => setModalType("login")}
         />
       )}
-      <Feature />
       <Footer />
     </>
   );
