@@ -1,4 +1,8 @@
-function Main() {
+interface MainProps {
+  setModalType: (ModalType: null | "login" | "register") => void;
+}
+
+const Main: React.FC<MainProps> = ({ setModalType }) => {
   return (
     <div className="flex flex-col bg-background">
       <div className="flex flex-col justify-center items-center text-center px-4 sm:px-6 md:px-8 py-8 md:py-12 bg-accent mt-20">
@@ -19,6 +23,7 @@ function Main() {
           <button
             className="hero-button font-semibold text-base md:text-lg animate-fade-in"
             style={{ animationDelay: "0.4s" }}
+            onClick={() => setModalType("login")}
           >
             شروع رایگان
           </button>
@@ -26,6 +31,5 @@ function Main() {
       </div>
     </div>
   );
-}
-
+};
 export default Main;

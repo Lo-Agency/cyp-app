@@ -1,6 +1,24 @@
 import { useState } from "react";
-import { isCookie, Link } from "react-router-dom";
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from "recharts";
+import { Link } from "react-router-dom";
+import {
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
+} from "recharts";
+import Cards from "./Cards";
+import Modal from "./Modaltransaction";
+
+type Transaction = {
+  id: number;
+  category: string;
+  amount: number;
+  date: string;
+  type: "income" | "expense";
+};
 
 const chartData = [
   { name: "فروردین", income: 4000, expense: 2400 },
@@ -11,133 +29,155 @@ const chartData = [
 
 // اینارو فعلا دستی وارد کردم برای دیدن UI
 const dashboardItems = [
-  { title: "داشبورد", path: "/Dashboard" ,icon:"src/asset/dashboard.svg"},
-  { title: "تراکنش‌ها", path: "/transactions" ,icon:"src/asset/transaction.svg"},
-  { title: "گزارش‌ها", path: "/reports" ,icon:"src/asset/report.svg"},
-  { title: "بودجه", path: "/budget" ,icon:"src/asset/budgets.svg"},
-  { title: "حساب کاربری", path: "/account" ,icon:"src/asset/account.svg"},
-  { title: "خروج", path: "/" ,icon:"src/asset/exit.svg"},
+  { title: "داشبورد", path: "/Dashboard" },
+  { title: "تراکنش‌ها", path: "/transactions" },
+  { title: "گزارش‌ها", path: "/reports" },
+  { title: "بودجه", path: "/budget" },
+  { title: "خروج", path: "/" },
 ];
 
 export default function Dashboard() {
   const [userName] = useState("کاربر تست");
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [transactions, setTransactions] = useState<Transaction[]>([]);
+  const [showModal, setShowModal] = useState(false);
 
-  const toggleSidebar = () => {
-    setIsSidebarOpen(!isSidebarOpen);
+  const handleAddTransaction = (transaction: {
+    date: string;
+    payee: string;
+    category: string;
+    amount: number;
+    type: "income" | "expense";
+  }) => {
+    setTransactions((prev) => [
+      ...prev,
+      {
+        ...transaction,
+        id: prev.length + 1,
+      },
+    ]);
   };
 
+  // محاسبه داینامیک
+  const totalIncome = transactions
+    .filter((t) => t.type === "income")
+    .reduce((sum, t) => sum + t.amount, 0);
+
+  const totalExpense = transactions
+    .filter((t) => t.type === "expense")
+    .reduce((sum, t) => sum + t.amount, 0);
+
+  const budget = totalIncome - totalExpense;
+
   return (
-    <div className="min-h-screen bg-background text-text-primary p-4 md:p-6" dir="rtl">
-      <div className="flex flex-col md:flex-row gap-6">
+    <div className="min-h-screen bg-gray-100 p-6" dir="rtl">
+      <div className="bg-white rounded-2xl shadow flex overflow-hidden min-h-screen">
         {/* Sidebar */}
-        <div className={`fixed md:static inset-y-0 right-0 w-64 bg-white shadow-md transform ${isSidebarOpen ? "translate-x-0" : "translate-x-full"
-          } md:translate-x-0 transition-transform duration-300 z-50 md:z-auto`}>
-          <div className="p-6">
-            <div className="flex justify-between items-center mb-6">
-              <h1 className="text-2xl font-bold text-primary animate-fade-in">CYP</h1>
-              <button
-                className="md:hidden text-primary"
-                onClick={toggleSidebar}
-                aria-label="بستن منو"
-              >
-                <svg
-                  className="w-6 h-6"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                  xmlns="http://www.w3.org/2000/svg"
+        <div className="w-64 bg-white border-r border-gray-300">
+          <h1 className="text-2xl font-bold mb-4 p-6">CYP</h1>
+          <ul className="space-y-2 p-4">
+            {dashboardItems.map((item, index) => (
+              <li key={index}>
+                <Link
+                  to={item.path}
+                  className="block p-2 rounded hover:bg-gray-100"
                 >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M6 18L18 6M6 6l12 12"
-                  />
-                </svg>
-              </button>
-            </div>
-            <ul className="space-y-2">
-              {dashboardItems.map((item, index) => (
-                <li key={index}>
-                  <Link
-                    to={item.path}
-                    className="flex items-center gap-2 p-3 rounded-md text-text-primary hover:bg-accent hover:text-secondary transition-colors animate-fade-in"
-                    style={{ animationDelay: `${index * 0.1}s` }}
-                    onClick={() => setIsSidebarOpen(false)}
-                    aria-label={item.title}
-                  >
-                       <img
-                      src={item.icon}
-                      alt={`${item.title} icon`}
-                      className="w-4 h-4"
-                    />
-                    <span>{item.title}</span>
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
+                  {item.title}
+                </Link>
+              </li>
+            ))}
+          </ul>
         </div>
-        <main className="flex-1">
-          {/* این قسمت برای ورژن موبایل */}
-          <button
-            className="md:hidden text-primary mb-4 p-2"
-            onClick={toggleSidebar}
-            aria-label="باز کردن منو"
-          >
-            <svg
-              className="w-6 h-6"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-              xmlns="http://www.w3.org/2000/svg"
+        <div className="flex-1 p-6">
+          <div className="flex justify-between items-center mb-6">
+            <h2 className="text-2xl font-bold">خوش آمدید، {userName}</h2>
+            <button
+              className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-800"
+              onClick={() => setShowModal(true)}
             >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M4 6h16M4 12h16M4 18h16"
-              />
-            </svg>
-          </button>
-          <div className="flex justify-between items-center mb-6 animate-fade-in">
-            <h2 className="text-2xl md:text-3xl font-bold text-primary">خوش آمدید، {userName}</h2>
+              تراکنش جدید
+            </button>
           </div>
-
-
-         <div className="bg-white p-6 rounded-xl shadow-md mb-6 animate-fade-in" style={{ animationDelay: "0.3s" }}>
-            <h3 className="text-lg font-semibold text-text-primary mb-4">روند درآمد و هزینه</h3>
-            <LineChart width={600} height={300} data={chartData} className="w-full max-w-full">
-              <CartesianGrid strokeDasharray="3 3" stroke="var(--color-accent)" />
-              <XAxis dataKey="name" stroke="var(--color-text-secondary)" />
-              <YAxis stroke="var(--color-text-secondary)" />
-              <Tooltip
-                contentStyle={{
-                  backgroundColor: "var(--color-background)",
-                  borderColor: "var(--color-accent)",
-                }}
-              />
+          <div className="flex flex-row justify-between gap-4 p-8">
+            <Cards
+              title="درآمدها"
+              amount={`${totalIncome.toLocaleString()} تومان`}
+            />
+            <Cards
+              title="هزینه ها"
+              amount={`${totalExpense.toLocaleString()} تومان`}
+            />
+            <Cards title="بودجه" amount={`${budget.toLocaleString()} تومان`} />
+          </div>
+          <div className="bg-white p-6 rounded-xl shadow mb-6">
+            <h3 className="text-lg font-semibold text-gray-700 mb-4">
+              روند درآمد و هزینه
+            </h3>
+            <LineChart width={600} height={300} data={chartData}>
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="name" />
+              <YAxis />
+              <Tooltip />
               <Legend />
               <Line
                 type="monotone"
                 dataKey="income"
-                stroke="var(--color-primary)"
+                stroke="#10B981"
                 name="درآمد"
-                strokeWidth={2}
               />
               <Line
                 type="monotone"
                 dataKey="expense"
-                stroke="var(--color-error)"
+                stroke="#EF4444"
                 name="هزینه"
-                strokeWidth={2}
               />
             </LineChart>
           </div>
-           </main>
+          <div className="p-8">
+            <div className="flex justify-between mb-4">
+              <h2 className="text-lg font-semibold">تراکنش ها</h2>
+            </div>
+
+            {/* Transactions Table */}
+            <div className="bg-white p-6 rounded-xl shadow">
+              <h3 className="text-lg font-semibold text-gray-700 mb-4">
+                تراکنش‌های اخیر
+              </h3>
+              {transactions.length === 0 ? (
+                <p className="text-gray-500">تراکنشی ثبت نشده است.</p>
+              ) : (
+                <table className="w-full text-right">
+                  <thead>
+                    <tr className="border-b">
+                      <th className="p-2">دسته‌بندی</th>
+                      <th className="p-2">مبلغ (تومان)</th>
+                      <th className="p-2">تاریخ</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {transactions.map((transaction) => (
+                      <tr key={transaction.id} className="border-b">
+                        <td className="p-2">{transaction.category}</td>
+                        <td className="p-2">
+                          {transaction.amount.toLocaleString()}
+                        </td>
+                        <td className="p-2">{transaction.date}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              )}
+            </div>
+          </div>
         </div>
-       
+      </div>
+
+      {/* مدال اضافه کردن تراکنش */}
+      {showModal && (
+        <Modal
+          onClose={() => setShowModal(false)}
+          onAdd={handleAddTransaction}
+        />
+      )}
     </div>
   );
 }
