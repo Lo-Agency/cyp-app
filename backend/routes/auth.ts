@@ -1,20 +1,23 @@
-import express from "express";
-import { prisma } from "../prisma.ts";
+import express, { Request, Response, Router } from "express";
+import { prisma } from "../prisma";
 import bcrypt from "bcrypt";
 
-const router = express.Router();
+const router: Router = express.Router();
 
-router.post("/register", async (req, res) => {
-  const { name, email, password } = req.body;
-
-  if (!name || !email || !password) {
-    return res.status(400).json({ message: "همه فیلدها الزامی هستند." });
-  }
-
+router.post("/register", async (req: Request, res: Response) => {
   try {
+    const { name, email, password } = req.body;
+
+    if (!name || !email || !password) {
+      res.status(400).json({ message: "همه فیلدها الزامی هستند." });
+      return;
+    }
+
     const existingUser = await prisma.user.findUnique({ where: { email } });
+
     if (existingUser) {
-      return res.status(400).json({ message: "این ایمیل قبلاً ثبت شده است." });
+      res.status(400).json({ message: "این ایمیل قبلاً ثبت شده است." });
+      return;
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -28,7 +31,8 @@ router.post("/register", async (req, res) => {
       user: { id: user.id, email: user.email },
     });
   } catch (err) {
-    res.status(500).json({ message: "خطا در سرور", error: err });
+    console.error(err);
+    res.status(500).json({ message: "خطا در سرور" });
   }
 });
 
