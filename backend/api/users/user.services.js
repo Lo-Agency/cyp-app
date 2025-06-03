@@ -1,5 +1,5 @@
-const bcrypt = require("bcrypt");
-const { db } = require("../../utils/db");
+import bcrypt from "bcrypt";
+import { db } from "../../utils/db";
 
 function findUserByEmail(email) {
   return db.user.findUnique({
@@ -24,8 +24,4 @@ function findUserById(id) {
   });
 }
 
-module.exports = {
-  findUserByEmail,
-  findUserById,
-  createUserByEmailAndPassword,
-};
+export { findUserByEmail, findUserById, createUserByEmailAndPassword };

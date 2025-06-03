@@ -1,5 +1,5 @@
-const jwt = require("jsonwebtoken");
-const crypto = require("crypto");
+import jwt from "jsonwebtoken";
+import crypto from "crypto";
 
 // Usually I keep the token between 5 minutes - 15 minutes
 function generateAccessToken(user) {
@@ -20,8 +20,4 @@ function generateTokens(user) {
   return { accessToken, refreshToken };
 }
 
-module.exports = {
-  generateAccessToken,
-  generateRefreshToken,
-  generateTokens,
-};
+export { generateAccessToken, generateRefreshToken, generateTokens };

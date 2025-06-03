@@ -1,5 +1,5 @@
-const { db } = require("../../utils/db");
-const { hashToken } = require("../../utils/hash");
+import { db } from "../../utils/db";
+import hashToken from "../../utils/hashToken";
 
 // used when we create a refresh token.
 // a refresh token is valid for 30 days
@@ -46,7 +46,7 @@ function revokeTokens(userId) {
   });
 }
 
-module.exports = {
+export {
   addRefreshTokenToWhitelist,
   findRefreshToken,
   deleteRefreshTokenById,

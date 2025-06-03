@@ -1,14 +1,12 @@
-// server.ts یا server.js در حالت ESM یا TypeScript
-
 import express from "express";
 import cors from "cors";
-import authRoutes from "./api/auth/auth.routes"; // باید export default داشته باشه
+import authRoutes from "./api/auth/auth.routes";
 
 const app = express();
 
 app.use(
   cors({
-    origin: "http://localhost:3000",
+    origin: "http://localhost:5173",
     credentials: true,
   })
 );

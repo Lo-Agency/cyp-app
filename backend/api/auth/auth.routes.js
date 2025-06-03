@@ -1,24 +1,25 @@
-const express = require("express");
-const bcrypt = require("bcrypt");
-const { generateTokens } = require("../../utils/jwt");
-const {
+import express from "express";
+import bcrypt from "bcrypt";
+import { generateTokens } from "../../utils/jwt";
+import {
   addRefreshTokenToWhitelist,
   findRefreshToken,
   deleteRefreshTokenById,
   revokeTokens,
-} = require("./auth.services");
+} from "./auth.services";
 
 const router = express.Router();
-const {
+import {
   findUserByEmail,
   createUserByEmailAndPassword,
   findUserById,
-} = require("../user/user.services");
+} from "../users/user.services.js";
 
 router.post("/register", async (req, res, next) => {
+  console.log("somi");
   try {
-    const { email, password } = req.body;
-    if (!email || !password) {
+    const { email, password, name } = req.body;
+    if (!email || !password || !name) {
       res.status(400);
       throw new Error("You must provide an email and a password.");
     }
@@ -30,7 +31,7 @@ router.post("/register", async (req, res, next) => {
       throw new Error("Email already in use.");
     }
 
-    const user = await createUserByEmailAndPassword({ email, password });
+    const user = await createUserByEmailAndPassword({ email, password, name });
     const { accessToken, refreshToken } = generateTokens(user);
     await addRefreshTokenToWhitelist({ refreshToken, userId: user.id });
 
@@ -43,4 +44,4 @@ router.post("/register", async (req, res, next) => {
   }
 });
 
-module.exports = router;
+export default router;
