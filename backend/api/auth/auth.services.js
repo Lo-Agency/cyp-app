@@ -1,42 +1,54 @@
-const bcrypt = require("bcryptjs");
-const prisma = require("../../utils/db"); // مسیر درست با توجه به ساختار تو
-const { createAccessToken, createRefreshToken } = require("../../utils/jwt");
+const { db } = require("../../utils/db");
+const { hashToken } = require("../../utils/hash");
 
-exports.register = async (req, res) => {
-  const { email, password } = req.body;
+// used when we create a refresh token.
+// a refresh token is valid for 30 days
+// that means that if a user is inactive for more than 30 days, he will be required to log in again
+function addRefreshTokenToWhitelist({ refreshToken, userId }) {
+  return db.refreshToken.create({
+    data: {
+      hashedToken: hashToken(refreshToken),
+      userId,
+      expireAt: new Date(Date.now() + 1000 * 60 * 60 * 24 * 30), // 30 days
+    },
+  });
+}
 
-  try {
-    // بررسی وجود کاربر
-    const existingUser = await prisma.user.findUnique({
-      where: { email },
-    });
+// used to check if the token sent by the client is in the database.
+function findRefreshToken(token) {
+  return db.refreshToken.findUnique({
+    where: {
+      hashedToken: hashToken(token),
+    },
+  });
+}
 
-    if (existingUser) {
-      return res.status(400).json({ message: "کاربر قبلاً ثبت‌نام کرده است." });
-    }
+// soft delete tokens after usage.
+function deleteRefreshTokenById(id) {
+  return db.refreshToken.update({
+    where: {
+      id,
+    },
+    data: {
+      revoked: true,
+    },
+  });
+}
 
-    // هش کردن پسورد
-    const hashedPassword = await bcrypt.hash(password, 10);
+function revokeTokens(userId) {
+  return db.refreshToken.updateMany({
+    where: {
+      userId,
+    },
+    data: {
+      revoked: true,
+    },
+  });
+}
 
-    // ساخت کاربر
-    const user = await prisma.user.create({
-      data: {
-        email,
-        password: hashedPassword,
-      },
-    });
-
-    // ساختن توکن‌ها
-    const accessToken = createAccessToken(user);
-    const refreshToken = createRefreshToken(user);
-
-    // خروجی JSON به سمت فرانت
-    res.status(201).json({
-      accessToken,
-      refreshToken,
-    });
-  } catch (error) {
-    console.error("Register Error:", error);
-    res.status(500).json({ message: "خطای سرور در ثبت‌نام" });
-  }
+module.exports = {
+  addRefreshTokenToWhitelist,
+  findRefreshToken,
+  deleteRefreshTokenById,
+  revokeTokens,
 };

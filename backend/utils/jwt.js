@@ -1,12 +1,27 @@
 const jwt = require("jsonwebtoken");
+const crypto = require("crypto");
 
-const ACCESS_SECRET = "your_access_secret"; // حتماً از .env بگیر بعداً
-const REFRESH_SECRET = "your_refresh_secret";
+// Usually I keep the token between 5 minutes - 15 minutes
+function generateAccessToken(user) {
+  return jwt.sign({ userId: user.id }, process.env.JWT_ACCESS_SECRET, {
+    expiresIn: "5m",
+  });
+}
 
-exports.createAccessToken = (user) => {
-  return jwt.sign({ userId: user.id }, ACCESS_SECRET, { expiresIn: "15m" });
-};
+// Generate a random string as refreshToken
+function generateRefreshToken() {
+  const token = crypto.randomBytes(16).toString("base64url");
+  return token;
+}
 
-exports.createRefreshToken = (user) => {
-  return jwt.sign({ userId: user.id }, REFRESH_SECRET, { expiresIn: "7d" });
+function generateTokens(user) {
+  const accessToken = generateAccessToken(user);
+  const refreshToken = generateRefreshToken();
+  return { accessToken, refreshToken };
+}
+
+module.exports = {
+  generateAccessToken,
+  generateRefreshToken,
+  generateTokens,
 };
