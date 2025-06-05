@@ -16,7 +16,8 @@ function LoginModal({
   const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
-  const handleLogin = () => {
+
+  const handleLogin = async () => {
     setEmailError("");
     setPasswordError("");
 
@@ -44,10 +45,35 @@ function LoginModal({
     if (!valid) return;
 
     setLoading(true);
-    setTimeout(() => {
-      setLoading(false);
+    try {
+      const response = await fetch("http://localhost:5000/api/auth/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, password }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || "ورود ناموفق بود");
+      }
+
+      localStorage.setItem("accessToken", data.accessToken);
+      localStorage.setItem("refreshToken", data.refreshToken);
+
       navigate("/dashboard");
-    }, 1000);
+    } catch (err: any) {
+      if (err.message.includes("login")) {
+        setEmailError("ایمیل یا رمز عبور اشتباه است.");
+        setPasswordError(" ");
+      } else {
+        alert("خطایی رخ داد: " + err.message);
+      }
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -63,7 +89,7 @@ function LoginModal({
           ✖
         </button>
         <div>
-          <img src={logo} alt="logo" className=" block w-28 h-20 " />
+          <img src={logo} alt="logo" className="block w-28 h-20" />
         </div>
         <h2 dir="rtl" className="text-2xl text-black font-semibold mb-1">
           خوش آمدید!
@@ -97,15 +123,14 @@ function LoginModal({
         <button
           onClick={handleLogin}
           disabled={loading}
-          className={`w-full py-2 rounded-md text-white ${
-            loading ? "bg-gray-400 cursor-not-allowed" : "bg-teal-800"
-          }`}
+          className={`w-full py-2 rounded-md text-white ${loading ? "bg-gray-400 cursor-not-allowed" : "bg-teal-800"
+            }`}
         >
           {loading ? "در حال ورود..." : "ورود"}
         </button>
 
         <div className="mt-4 text-center text-sm text-gray-600">
-          هیچ اکانتی ندارید ?{" "}
+          هیچ اکانتی ندارید؟{" "}
           <span
             onClick={onSwitchToRegister}
             className="text-blue-600 cursor-pointer"

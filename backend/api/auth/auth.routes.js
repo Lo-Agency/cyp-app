@@ -44,4 +44,40 @@ router.post("/register", async (req, res, next) => {
   }
 });
 
+router.post("/login", async (req, res, next) => {
+  try {
+    const { email, password } = req.body;
+
+    if (!email || !password) {
+      res.status(400);
+      throw new Error("Please provide email and password.");
+    }
+
+    const existingUser = await findUserByEmail(email);
+
+    if (!existingUser) {
+      res.status(401);
+      throw new Error("Invalid login credentials.");
+    }
+
+    const isPasswordValid = await bcrypt.compare(password, existingUser.password);
+
+    if (!isPasswordValid) {
+      res.status(401);
+      throw new Error("Invalid login credentials.");
+    }
+
+    const { accessToken, refreshToken } = generateTokens(existingUser);
+    await addRefreshTokenToWhitelist({ refreshToken, userId: existingUser.id });
+
+    res.json({
+      accessToken,
+      refreshToken,
+    });
+
+  } catch (err) {
+    next(err);
+  }
+});
+
 export default router;
