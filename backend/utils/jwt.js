@@ -19,5 +19,26 @@ function generateTokens(user) {
   const refreshToken = generateRefreshToken();
   return { accessToken, refreshToken };
 }
+function verifyAccessToken(req, res, next) {
+  const authHeader = req.headers["authorization"];
+  const token = authHeader?.split(" ")[1];
 
-export { generateAccessToken, generateRefreshToken, generateTokens };
+  if (!token) {
+    return res.status(401).json({ message: "توکن وجود ندارد" });
+  }
+
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_ACCESS_SECRET);
+    req.user = { id: decoded.userId }; // اینجا مهمه!
+    next();
+  } catch (err) {
+    return res.status(401).json({ message: "توکن نامعتبر است" });
+  }
+}
+
+export {
+  generateAccessToken,
+  generateRefreshToken,
+  generateTokens,
+  verifyAccessToken,
+};

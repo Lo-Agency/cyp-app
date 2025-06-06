@@ -16,7 +16,6 @@ import {
 } from "../users/user.services.js";
 
 router.post("/register", async (req, res, next) => {
-  console.log("somi");
   try {
     const { email, password, name } = req.body;
     if (!email || !password || !name) {
@@ -60,7 +59,10 @@ router.post("/login", async (req, res, next) => {
       throw new Error("Invalid login credentials.");
     }
 
-    const isPasswordValid = await bcrypt.compare(password, existingUser.password);
+    const isPasswordValid = await bcrypt.compare(
+      password,
+      existingUser.password
+    );
 
     if (!isPasswordValid) {
       res.status(401);
@@ -74,7 +76,6 @@ router.post("/login", async (req, res, next) => {
       accessToken,
       refreshToken,
     });
-
   } catch (err) {
     next(err);
   }
