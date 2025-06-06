@@ -1,5 +1,6 @@
-import { useState } from "react";
+import { useState, useEffect} from "react";
 import { Link } from "react-router-dom";
+import axios from "axios";
 import {
   LineChart,
   Line,
@@ -37,25 +38,75 @@ const dashboardItems = [
 ];
 
 export default function Dashboard() {
-  const [userName] = useState("کاربر تست");
+  const [userName, setUserName] = useState(" ");
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [showModal, setShowModal] = useState(false);
+ useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const res = await fetch("/api/auth/me", {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+          },
+        });
+        if (!res.ok) throw new Error("خطا در دریافت اطلاعات کاربر");
+        const data = await res.json();
+        setUserName(data.name);
+      } catch (err) {
+        console.error("خطا:", err);
+        setUserName("کاربر ناشناس");
+      }
+    };
 
-  const handleAddTransaction = (transaction: {
+    fetchUser();
+  }, []);
+
+
+  
+  useEffect(() => {
+  const fetchTransactions = async () => {
+    try {
+      const res = await axios.get("http://localhost:5000/api/transaction", {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+        },
+      });
+      setTransactions(res.data);
+    } catch (error) {
+      console.error("خطا در گرفتن تراکنش‌ها:", error);
+    }
+  };
+
+  fetchTransactions();
+}, []);
+  const handleAddTransaction = async (transaction: {
     date: string;
     payee: string;
     category: string;
     amount: number;
     type: "income" | "expense";
   }) => {
-    setTransactions((prev) => [
-      ...prev,
+    try{
+      const res = await axios.post(
+      "http://localhost:5000/api/transaction",
       {
-        ...transaction,
-        id: prev.length + 1,
+        title: transaction.payee,
+        amount: transaction.amount,
+        type: transaction.type.toUpperCase(),
+        categoryId: parseInt(transaction.category),
+        date: transaction.date,
       },
-    ]);
-  };
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+        },
+      }
+    );
+    setTransactions((prev) => [...prev, res.data]);
+  } catch (error) {
+    console.error("خطا در افزودن تراکنش:", error);
+  }
+    };
 
   // محاسبه داینامیک
   const totalIncome = transactions

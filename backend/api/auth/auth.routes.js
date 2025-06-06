@@ -7,6 +7,7 @@ import {
   deleteRefreshTokenById,
   revokeTokens,
 } from "./auth.services";
+import { verifyAccessToken } from "../../utils/jwt.js";
 
 const router = express.Router();
 import {
@@ -14,6 +15,20 @@ import {
   createUserByEmailAndPassword,
   findUserById,
 } from "../users/user.services.js";
+
+router.get("/me", verifyAccessToken, async (req, res, next) => {
+  try {
+    const user = await findUserById(req.user.id);
+    if (!user) return res.sendStatus(404);
+    res.json({
+      id: user.id,
+      name: user.name,
+      email: user.email,
+    });
+  } catch (err) {
+    next(err);
+  }
+});
 
 router.post("/register", async (req, res, next) => {
   try {

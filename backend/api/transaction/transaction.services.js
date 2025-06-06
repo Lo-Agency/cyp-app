@@ -1,19 +1,21 @@
-import prisma from "../utils/db.js";
+import { db } from "../../utils/db";
 
 export const createTransaction = async ({
+   title,
   amount,
   type,
-  category,
-  date,
+  categoryId,
   userId,
+  date,
 }) => {
   return prisma.transaction.create({
     data: {
+  title,
       amount,
       type,
-      category,
-      date: new Date(date),
+      categoryId,
       userId,
+      createdAt: date ? new Date(date) : undefined,
     },
   });
 };
@@ -22,5 +24,10 @@ export const getUserTransactions = async (userId) => {
   return prisma.transaction.findMany({
     where: { userId },
     orderBy: { date: "desc" },
+    include: {
+      category: {
+        select: { name: true },
+      },
+    },
   });
 };
