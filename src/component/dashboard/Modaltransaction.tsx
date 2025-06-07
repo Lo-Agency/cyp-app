@@ -4,14 +4,6 @@ import persian from "react-date-object/calendars/persian";
 import persian_fa from "react-date-object/locales/persian_fa";
 import DateObject from "react-date-object";
 
-const incomeCategories = ["حقوق", "فروش", "هدیه", "سایر درآمدها"];
-const expenseCategories = [
-  "خوراک",
-  "مسکن",
-  "حمل و نقل",
-  "سرگرمی",
-  "موارد دیگر",
-];
 
 interface ModalProps {
   onClose: () => void;
@@ -150,7 +142,7 @@ export default function Modal({ onClose, onAdd }: ModalProps) {
           >
             <option value="">-- انتخاب کنید --</option>
             {categories.map((cat) => (
-              <option key={cat} value={cat}>
+              <option key={cat.id} value={cat.name}>
                 {cat}
               </option>
             ))}
