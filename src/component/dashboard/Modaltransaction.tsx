@@ -1,24 +1,26 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import DatePicker from "react-multi-date-picker";
 import persian from "react-date-object/calendars/persian";
 import persian_fa from "react-date-object/locales/persian_fa";
 import DateObject from "react-date-object";
+import axios from "axios";
+import { ICategory } from "../../interfaces/category";
 
 
 interface ModalProps {
   onClose: () => void;
-  onAdd: (transaction: {
-    date: string;
+  addTransaction: (transaction: {
+    // date: string;
     payee: string;
     category: string;
     amount: number;
-    type: "income" | "expense";
+    type: "INCOME" | "EXPENSE";
   }) => void;
 }
 
-export default function Modal({ onClose, onAdd }: ModalProps) {
-  const [transactionType, setTransactionType] = useState<"income" | "expense">(
-    "expense"
+export default function Modal({ onClose, addTransaction }: ModalProps) {
+  const [transactionType, setTransactionType] = useState<"INCOME" | "EXPENSE">(
+    "EXPENSE"
   );
 
   const [newTransaction, setNewTransaction] = useState<{
@@ -39,8 +41,27 @@ export default function Modal({ onClose, onAdd }: ModalProps) {
     category?: string;
   }>({});
 
-  const categories =
-    transactionType === "income" ? incomeCategories : expenseCategories;
+  const [categories, setCategories] = useState<ICategory[]>([])
+  
+   const fetchCategories = async () => {
+    try {
+      const res = await axios.get("http://localhost:5000/api/category", {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+        },
+      });
+      setCategories(res.data)
+
+    } catch (error) {
+      console.error("خطا:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchCategories();
+  }, []);
+
+
 
   const handleSubmit = () => {
     const errors: { payee?: string; amount?: string; category?: string } = {};
@@ -64,7 +85,7 @@ export default function Modal({ onClose, onAdd }: ModalProps) {
       type: transactionType,
     };
 
-    onAdd(formatted);
+    addTransaction(formatted);
     onClose();
   };
 
@@ -76,9 +97,9 @@ export default function Modal({ onClose, onAdd }: ModalProps) {
         {/* Tabs */}
         <div className="flex justify-center gap-4 mb-2">
           <button
-            onClick={() => setTransactionType("income")}
+            onClick={() => setTransactionType("INCOME")}
             className={`px-4 py-1 rounded-full text-sm font-medium ${
-              transactionType === "income"
+              transactionType === "INCOME"
                 ? "bg-green-500 text-white"
                 : "bg-gray-200 text-gray-700"
             }`}
@@ -86,9 +107,9 @@ export default function Modal({ onClose, onAdd }: ModalProps) {
             درآمد
           </button>
           <button
-            onClick={() => setTransactionType("expense")}
+            onClick={() => setTransactionType("EXPENSE")}
             className={`px-4 py-1 rounded-full text-sm font-medium ${
-              transactionType === "expense"
+              transactionType === "EXPENSE"
                 ? "bg-red-500 text-white"
                 : "bg-gray-200 text-gray-700"
             }`}
@@ -115,7 +136,7 @@ export default function Modal({ onClose, onAdd }: ModalProps) {
         {/* Payee */}
         <div>
           <label className="block text-sm mb-1">
-            {transactionType === "income" ? "پرداخت‌کننده" : "هزینه بابت"}
+            {transactionType === "INCOME" ? "پرداخت‌کننده" : "هزینه بابت"}
           </label>
           <input
             type="text"
@@ -141,9 +162,9 @@ export default function Modal({ onClose, onAdd }: ModalProps) {
             className="w-full border rounded p-2 text-right"
           >
             <option value="">-- انتخاب کنید --</option>
-            {categories.map((cat) => (
+            {categories.filter(cat => cat.type === transactionType).map((cat) => (
               <option key={cat.id} value={cat.name}>
-                {cat}
+                {cat.name}
               </option>
             ))}
           </select>

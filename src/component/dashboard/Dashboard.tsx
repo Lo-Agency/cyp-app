@@ -18,17 +18,15 @@ type Transaction = {
   category: string;
   amount: number;
   date: string;
-  type: "income" | "expense";
+  type: "INCOME" | "EXPENSE";
 };
 
 const chartData = [
-  { name: "فروردین", income: 4000, expense: 2400 },
-  { name: "اردیبهشت", income: 3000, expense: 1398 },
-  { name: "خرداد", income: 2000, expense: 9800 },
-  { name: "تیر", income: 2780, expense: 3908 },
+  { name: "فروردین", INCOME: 4000, EXPENSE: 2400 },
+  { name: "اردیبهشت", INCOME: 3000, EXPENSE: 1398 },
+  { name: "خرداد", INCOME: 2000, EXPENSE: 9800 },
+  { name: "تیر", INCOME: 2780, EXPENSE: 3908 },
 ];
-
-// اینارو فعلا دستی وارد کردم برای دیدن UI
 const dashboardItems = [
   { title: "داشبورد", path: "/Dashboard" },
   { title: "تراکنش‌ها", path: "/transactions" },
@@ -80,11 +78,11 @@ export default function Dashboard() {
   }, []);
   
   const handleAddTransaction = async (transaction: {
-    date: string;
+    // date: string;
     payee: string;
     category: string;
     amount: number;
-    type: "income" | "expense";
+    type: "INCOME" | "EXPENSE";
   }) => {
     try {
       const res = await axios.post(
@@ -94,7 +92,7 @@ export default function Dashboard() {
           amount: transaction.amount,
           type: transaction.type.toUpperCase(),
           categoryId: parseInt(transaction.category),
-          date: transaction.date,
+          // date: transaction.date,
         },
         {
           headers: {
@@ -112,11 +110,11 @@ export default function Dashboard() {
 
   // محاسبه داینامیک
   const totalIncome = transactions
-    .filter((t) => t.type === "income")
+    .filter((t) => t.type === "INCOME")
     .reduce((sum, t) => sum + t.amount, 0);
 
   const totalExpense = transactions
-    .filter((t) => t.type === "expense")
+    .filter((t) => t.type === "EXPENSE")
     .reduce((sum, t) => sum + t.amount, 0);
 
   const budget = totalIncome - totalExpense;
@@ -173,13 +171,13 @@ export default function Dashboard() {
               <Legend />
               <Line
                 type="monotone"
-                dataKey="income"
+                dataKey="INCOME"
                 stroke="#10B981"
                 name="درآمد"
               />
               <Line
                 type="monotone"
-                dataKey="expense"
+                dataKey="EXPENSE"
                 stroke="#EF4444"
                 name="هزینه"
               />
@@ -228,7 +226,7 @@ export default function Dashboard() {
       {showModal && (
         <Modal
           onClose={() => setShowModal(false)}
-          onAdd={handleAddTransaction}
+          addTransaction={handleAddTransaction}
         />
       )}
     </div>

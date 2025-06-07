@@ -11,7 +11,7 @@ router.use(verifyAccessToken); // می‌خوای همه تراکنش‌ها ف�
 
 router.post("/", async (req, res, next) => {
   try {
-    const { title,amount, type, categoryId, date } = req.body;
+    const { title,amount, type, categoryId } = req.body;
     const userId = req.user.id;
 
     const transaction = await createTransaction({
@@ -20,7 +20,7 @@ router.post("/", async (req, res, next) => {
       type,
       categoryId,
       userId,
-      date,
+      // date,
     });
     res.status(201).json(transaction);
   } catch (err) {

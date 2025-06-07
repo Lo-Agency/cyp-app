@@ -6,24 +6,22 @@ export const createTransaction = async ({
   type,
   categoryId,
   userId,
-  date,
+
 }) => {
-  return prisma.transaction.create({
+  return db.transaction.create({
     data: {
   title,
       amount,
       type,
       categoryId,
       userId,
-      createdAt: date ? new Date(date) : undefined,
     },
   });
 };
 
 export const getUserTransactions = async (userId) => {
-  return prisma.transaction.findMany({
+  return db.transaction.findMany({
     where: { userId },
-    orderBy: { date: "desc" },
     include: {
       category: {
         select: { name: true },
