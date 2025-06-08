@@ -82,7 +82,7 @@ export default function Dashboard() {
   }, []);
   
   const handleAddTransaction = async (transaction: {
-    // date: string;
+    date:Date;
     payee: string;
     category: string;
     amount: number;
@@ -94,9 +94,9 @@ export default function Dashboard() {
         {
           title: transaction.payee,
           amount: transaction.amount,
-          type: transaction.type.toUpperCase(),
+          type: transaction.type,
           categoryId: parseInt(transaction.category),
-          // date: transaction.date,
+          date: transaction.date,
         },
         {
           headers: {
