@@ -2,6 +2,6 @@ export interface ITransaction{
   id: number;
   category: string;
   amount: number;
-  date: string;
+  date: Date ;
   type: "INCOME" | "EXPENSE";
 };

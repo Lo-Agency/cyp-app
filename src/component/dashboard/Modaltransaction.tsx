@@ -10,7 +10,7 @@ import { ICategory } from "../../interfaces/category";
 interface ModalProps {
   onClose: () => void;
   addTransaction: (transaction: {
-    // date: string;
+    date: string;
     payee: string;
     category: string;
     amount: number;
@@ -63,31 +63,43 @@ export default function Modal({ onClose, addTransaction }: ModalProps) {
 
 
 
-  const handleSubmit = () => {
-    const errors: { payee?: string; amount?: string; category?: string } = {};
+ const handleSubmit = async () => {
+  const errors: { payee?: string; amount?: string; category?: string } = {};
 
-    // تبدیل amount به عدد
-    const amount = Number(newTransaction.amount);
+  const amount = Number(newTransaction.amount);
 
-    if (!newTransaction.payee) errors.payee = "پرداخت‌کننده را وارد کنید";
-    if (isNaN(amount) || amount <= 0) errors.amount = "مبلغ معتبر وارد کنید";
-    if (!newTransaction.category) errors.category = "دسته‌بندی را انتخاب کنید";
+  if (!newTransaction.payee) errors.payee = "پرداخت‌کننده را وارد کنید";
+  if (isNaN(amount) || amount <= 0) errors.amount = "مبلغ معتبر وارد کنید";
+  if (!newTransaction.category) errors.category = "دسته‌بندی را انتخاب کنید";
 
-    if (Object.keys(errors).length > 0) {
-      setFormErrors(errors);
-      return;
-    }
+  if (Object.keys(errors).length > 0) {
+    setFormErrors(errors);
+    return;
+  }
 
-    const formatted = {
-      ...newTransaction,
-      amount, // مقدار amount به عدد
-      date: newTransaction.date?.format("YYYY-MM-DD"),
-      type: transactionType,
-    };
+  const formatted = {
+    ...newTransaction,
+    amount,
+    date: newTransaction.date?.format("YYYY-MM-DD"),
+    type: transactionType,
+  };
 
+  try {
+    await axios.post("http://localhost:5000/api/transactions", formatted, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+      },
+    });
+
+    // اگر موفق بود، به state لوکال هم اضافه کن
     addTransaction(formatted);
     onClose();
-  };
+  } catch (error) {
+    console.error("خطا در ثبت تراکنش:", error);
+    // اینجا می‌تونی پیام خطا نشون بدی یا مدیریت دیگه‌ای انجام بدی
+  }
+};
+
 
   return (
     <div className="fixed inset-0 bg-opacity-30 backdrop-blur-sm flex items-center justify-center z-50">
