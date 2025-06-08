@@ -12,6 +12,7 @@ import {
 } from "recharts";
 import Cards from "./Cards";
 import Modal from "./Modaltransaction";
+import { useUser } from "../../contexts/userContext";
 
 type Transaction = {
   id: number;
@@ -36,28 +37,31 @@ const dashboardItems = [
 ];
 
 export default function Dashboard() {
-  const [userName, setUserName] = useState(" ");
+  const {user, setUser, logout} = useUser();
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [showModal, setShowModal] = useState(false);
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const res = await fetch("/api/auth/me", {
+        const res = await fetch("http://localhost:5000/api/auth/me", {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
           },
         });
         if (!res.ok) throw new Error("خطا در دریافت اطلاعات کاربر");
         const data = await res.json();
-        setUserName(data.name);
+        console.log("داده‌های کاربر:", data);
+        setUser({ name: data.name, id: data.id, email: data.email });
       } catch (err) {
         console.error("خطا:", err);
-        setUserName("کاربر ناشناس");
+        // داخل پرانتز
+        setUser({ name:"کاربر ناشناس" });
+
       }
     };
 
     fetchUser();
-  }, []);
+  }, [setUser]);
 
 
   const fetchTransactions = async () => {
@@ -130,6 +134,7 @@ export default function Dashboard() {
               <li key={index}>
                 <Link
                   to={item.path}
+                  onClick={item.title === "خروج" ? logout : undefined}
                   className="block p-2 rounded hover:bg-gray-100"
                 >
                   {item.title}
@@ -140,7 +145,7 @@ export default function Dashboard() {
         </div>
         <div className="flex-1 p-6">
           <div className="flex justify-between items-center mb-6">
-            <h2 className="text-2xl font-bold">خوش آمدید، {userName}</h2>
+            <h2 className="text-2xl font-bold">خوش آمدید، {user?.name || "کاربر"}</h2>
             <button
               className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-800"
               onClick={() => setShowModal(true)}

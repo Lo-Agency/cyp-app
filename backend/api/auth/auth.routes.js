@@ -96,4 +96,27 @@ router.post("/login", async (req, res, next) => {
   }
 });
 
+
+router.post("/refresh", async (req, res, next) => {
+  try {
+    const { refreshToken } = req.body;
+    if (!refreshToken) {
+      return res.status(401).json({ message: "Refresh token required" });
+    }
+    const token = await findRefreshToken(refreshToken);
+    if (!token || token.revoked || token.expireAt < new Date()) {
+      return res.status(401).json({ message: "Invalid or expired refresh token" });
+    }
+    const user = await findUserById(token.userId);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    const { accessToken, refreshToken: newRefreshToken } = generateTokens(user);
+    await addRefreshTokenToWhitelist({ refreshToken: newRefreshToken, userId: user.id });
+    await deleteRefreshTokenById(token.id);
+    res.json({ accessToken, refreshToken: newRefreshToken });
+  } catch (err) {
+    next(err);
+  }
+});
 export default router;

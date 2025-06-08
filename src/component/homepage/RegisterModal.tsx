@@ -102,7 +102,7 @@ function RegisterModal({
         if (response.ok) {
           alert("ثبت‌نام با موفقیت انجام شد ✅");
           onClose();
-          navigate("/");
+          navigate("/dashboard");
         } else {
           alert(data.message || "خطا در ثبت‌نام ❌");
         }
