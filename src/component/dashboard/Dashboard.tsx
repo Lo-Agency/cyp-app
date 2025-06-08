@@ -13,14 +13,9 @@ import {
 import Cards from "./Cards";
 import Modal from "./Modaltransaction";
 import { useUser } from "../../contexts/userContext";
+import { ITransaction } from "../../interfaces/transaction";
 
-type Transaction = {
-  id: number;
-  category: string;
-  amount: number;
-  date: string;
-  type: "INCOME" | "EXPENSE";
-};
+
 
 const chartData = [
   { name: "فروردین", INCOME: 4000, EXPENSE: 2400 },
@@ -38,7 +33,7 @@ const dashboardItems = [
 
 export default function Dashboard() {
   const {user, setUser, logout} = useUser();
-  const [transactions, setTransactions] = useState<Transaction[]>([]);
+  const [transactions, setTransactions] = useState<ITransaction[]>([]);
   const [showModal, setShowModal] = useState(false);
   useEffect(() => {
     const fetchUser = async () => {
@@ -51,11 +46,16 @@ export default function Dashboard() {
         if (!res.ok) throw new Error("خطا در دریافت اطلاعات کاربر");
         const data = await res.json();
         console.log("داده‌های کاربر:", data);
-        setUser({ name: data.name, id: data.id, email: data.email });
+        setUser({ name: data.name, id: data.id, email: data.email, password:data.password });
       } catch (err) {
         console.error("خطا:", err);
         // داخل پرانتز
-        setUser({ name:"کاربر ناشناس" });
+        setUser({
+          name: "کاربر ناشناس",
+          id: 0,
+          email: "",
+          password: ""
+        });
 
       }
     };

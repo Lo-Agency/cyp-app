@@ -1,21 +1,16 @@
 import { createContext, useContext, useState } from "react";
-interface User {
-  id?: number;
-  name: string;
-  email?: string;
-   password?:string;
-}
+import { IUser } from "../interfaces/user";
 
 interface UserContextType {
-  user: User | null;
-  setUser: (user: User | null) => void;
+  user: IUser | null;
+  setUser: (user: IUser | null) => void;
   logout: () => void;
 }
 
 const UserContext = createContext<UserContextType | undefined>(undefined);
 
 export const UserProvider = ({ children }: { children: React.ReactNode }) => {
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<IUser | null>(null);
   const logout = () => {
     setUser(null);
     localStorage.removeItem("accessToken");};
