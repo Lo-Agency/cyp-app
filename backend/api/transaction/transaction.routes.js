@@ -9,9 +9,9 @@ const router = express.Router();
 
 router.use(verifyAccessToken); // می‌خوای همه تراکنش‌ها فقط با JWT باشن
 
-router.post("/transaction", async (req, res, next) => {
+router.post("/", async (req, res, next) => {
   try {
-    const { title,amount, type, categoryId } = req.body;
+    const { title, amount, type, categoryId } = req.body;
     const userId = req.user.id;
 
     const transaction = await createTransaction({
@@ -28,7 +28,7 @@ router.post("/transaction", async (req, res, next) => {
   }
 });
 
-router.get("/transaction", async (req, res, next) => {
+router.get("/", async (req, res, next) => {
   try {
     const userId = req.user.id;
     const transactions = await getUserTransactions(userId);

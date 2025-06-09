@@ -15,8 +15,6 @@ import Modal from "./Modaltransaction";
 import { useUser } from "../../contexts/userContext";
 import { ITransaction } from "../../interfaces/transaction";
 
-
-
 const chartData = [
   { name: "فروردین", INCOME: 4000, EXPENSE: 2400 },
   { name: "اردیبهشت", INCOME: 3000, EXPENSE: 1398 },
@@ -32,7 +30,7 @@ const dashboardItems = [
 ];
 
 export default function Dashboard() {
-  const {user, setUser, logout} = useUser();
+  const { user, setUser, logout } = useUser();
   const [transactions, setTransactions] = useState<ITransaction[]>([]);
   const [showModal, setShowModal] = useState(false);
   useEffect(() => {
@@ -46,7 +44,12 @@ export default function Dashboard() {
         if (!res.ok) throw new Error("خطا در دریافت اطلاعات کاربر");
         const data = await res.json();
         console.log("داده‌های کاربر:", data);
-        setUser({ name: data.name, id: data.id, email: data.email, password:data.password });
+        setUser({
+          name: data.name,
+          id: data.id,
+          email: data.email,
+          password: data.password,
+        });
       } catch (err) {
         console.error("خطا:", err);
         // داخل پرانتز
@@ -54,23 +57,24 @@ export default function Dashboard() {
           name: "کاربر ناشناس",
           id: 0,
           email: "",
-          password: ""
+          password: "",
         });
-
       }
     };
 
     fetchUser();
   }, [setUser]);
 
-
   const fetchTransactions = async () => {
     try {
-      const res = await axios.get("http://localhost:5000/api/transaction", {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-        },
-      });
+      const res = await axios.get<ITransaction[]>(
+        "http://localhost:5000/api/transaction",
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+          },
+        }
+      );
       setTransactions(res.data);
     } catch (error) {
       console.error("خطا در گرفتن تراکنش‌ها:", error);
@@ -80,9 +84,9 @@ export default function Dashboard() {
   useEffect(() => {
     fetchTransactions();
   }, []);
-  
+
   const handleAddTransaction = async (transaction: {
-    date:Date;
+    date: string;
     payee: string;
     category: string;
     amount: number;
@@ -104,13 +108,12 @@ export default function Dashboard() {
           },
         }
       );
-      setTransactions((prev) => [...prev, res.data]);
+      setTransactions((prev) => [...prev, res.data as ITransaction]);
     } catch (error) {
       console.error("خطا در افزودن تراکنش:", error);
     }
   };
-  console.log({transactions})
-
+  console.log({ transactions });
 
   // محاسبه داینامیک
   const totalIncome = transactions
@@ -145,7 +148,9 @@ export default function Dashboard() {
         </div>
         <div className="flex-1 p-6">
           <div className="flex justify-between items-center mb-6">
-            <h2 className="text-2xl font-bold">خوش آمدید، {user?.name || "کاربر"}</h2>
+            <h2 className="text-2xl font-bold">
+              خوش آمدید، {user?.name || "کاربر"}
+            </h2>
             <button
               className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-800"
               onClick={() => setShowModal(true)}
@@ -216,7 +221,13 @@ export default function Dashboard() {
                         <td className="p-2">
                           {transaction.amount.toLocaleString()}
                         </td>
-                        <td className="p-2">{transaction.date}</td>
+                        <td className="p-2">
+                          {typeof transaction.date === "string"
+                            ? transaction.date
+                            : transaction.date instanceof Date
+                            ? transaction.date.toLocaleDateString()
+                            : ""}
+                        </td>
                       </tr>
                     ))}
                   </tbody>

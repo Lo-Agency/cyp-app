@@ -6,7 +6,6 @@ import DateObject from "react-date-object";
 import axios from "axios";
 import { ICategory } from "../../interfaces/category";
 
-
 interface ModalProps {
   onClose: () => void;
   addTransaction: (transaction: {
@@ -41,17 +40,16 @@ export default function Modal({ onClose, addTransaction }: ModalProps) {
     category?: string;
   }>({});
 
-  const [categories, setCategories] = useState<ICategory[]>([])
-  
-   const fetchCategories = async () => {
+  const [categories, setCategories] = useState<ICategory[]>([]);
+
+  const fetchCategories = async () => {
     try {
       const res = await axios.get("http://localhost:5000/api/category", {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
         },
       });
-      setCategories(res.data)
-
+      setCategories(res.data as ICategory[]);
     } catch (error) {
       console.error("خطا:", error);
     }
@@ -61,45 +59,42 @@ export default function Modal({ onClose, addTransaction }: ModalProps) {
     fetchCategories();
   }, []);
 
+  const handleSubmit = async () => {
+    const errors: { payee?: string; amount?: string; category?: string } = {};
 
+    const amount = Number(newTransaction.amount);
 
- const handleSubmit = async () => {
-  const errors: { payee?: string; amount?: string; category?: string } = {};
+    if (!newTransaction.payee) errors.payee = "پرداخت‌کننده را وارد کنید";
+    if (isNaN(amount) || amount <= 0) errors.amount = "مبلغ معتبر وارد کنید";
+    if (!newTransaction.category) errors.category = "دسته‌بندی را انتخاب کنید";
 
-  const amount = Number(newTransaction.amount);
+    if (Object.keys(errors).length > 0) {
+      setFormErrors(errors);
+      return;
+    }
 
-  if (!newTransaction.payee) errors.payee = "پرداخت‌کننده را وارد کنید";
-  if (isNaN(amount) || amount <= 0) errors.amount = "مبلغ معتبر وارد کنید";
-  if (!newTransaction.category) errors.category = "دسته‌بندی را انتخاب کنید";
+    const formatted = {
+      ...newTransaction,
+      amount,
+      date: newTransaction.date?.format("YYYY-MM-DD"),
+      type: transactionType,
+    };
 
-  if (Object.keys(errors).length > 0) {
-    setFormErrors(errors);
-    return;
-  }
+    try {
+      await axios.post("http://localhost:5000/api/transaction", formatted, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+        },
+      });
 
-  const formatted = {
-    ...newTransaction,
-    amount,
-    date: newTransaction.date?.format("YYYY-MM-DD"),
-    type: transactionType,
+      // اگر موفق بود، به state لوکال هم اضافه کن
+      addTransaction(formatted);
+      onClose();
+    } catch (error) {
+      console.error("خطا در ثبت تراکنش:", error);
+      // اینجا می‌تونی پیام خطا نشون بدی یا مدیریت دیگه‌ای انجام بدی
+    }
   };
-
-  try {
-    await axios.post("http://localhost:5000/api/transactions", formatted, {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-      },
-    });
-
-    // اگر موفق بود، به state لوکال هم اضافه کن
-    addTransaction(formatted);
-    onClose();
-  } catch (error) {
-    console.error("خطا در ثبت تراکنش:", error);
-    // اینجا می‌تونی پیام خطا نشون بدی یا مدیریت دیگه‌ای انجام بدی
-  }
-};
-
 
   return (
     <div className="fixed inset-0 bg-opacity-30 backdrop-blur-sm flex items-center justify-center z-50">
@@ -174,11 +169,13 @@ export default function Modal({ onClose, addTransaction }: ModalProps) {
             className="w-full border rounded p-2 text-right"
           >
             <option value="">-- انتخاب کنید --</option>
-            {categories.filter(cat => cat.type === transactionType).map((cat) => (
-              <option key={cat.id} value={cat.name}>
-                {cat.name}
-              </option>
-            ))}
+            {categories
+              .filter((cat) => cat.type === transactionType)
+              .map((cat) => (
+                <option key={cat.id} value={cat.name}>
+                  {cat.name}
+                </option>
+              ))}
           </select>
           {formErrors.category && (
             <p className="text-red-500 text-sm">{formErrors.category}</p>
