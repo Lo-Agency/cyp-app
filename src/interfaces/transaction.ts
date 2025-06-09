@@ -1,7 +1,7 @@
-export interface ITransaction{
+export interface ITransaction {
   id: number;
-  category: string;
+  category: { name: string };
   amount: number;
-  date: Date ;
+  date: Date;
   type: "INCOME" | "EXPENSE";
-};
+}

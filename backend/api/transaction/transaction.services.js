@@ -1,20 +1,33 @@
 import { db } from "../../utils/db";
 
 export const createTransaction = async ({
-   title,
+  title,
   amount,
   type,
   categoryId,
   userId,
-
+  date,
 }) => {
+  console.log("Creating transaction:", {
+    title,
+    amount,
+    type,
+    categoryId,
+    userId,
+    date,
+  });
   return db.transaction.create({
     data: {
-  title,
+      date,
+      title,
       amount,
       type,
-      categoryId,
-      userId,
+      category: {
+        connect: { id: parseInt(categoryId) },
+      },
+      user: {
+        connect: { id: userId },
+      },
     },
   });
 };

@@ -8,34 +8,27 @@ import { ICategory } from "../../interfaces/category";
 
 interface ModalProps {
   onClose: () => void;
-  addTransaction: (transaction: {
-    date: string;
-    payee: string;
-    category: string;
-    amount: number;
-    type: "INCOME" | "EXPENSE";
-  }) => void;
 }
 
-export default function Modal({ onClose, addTransaction }: ModalProps) {
+export default function Modal({ onClose }: ModalProps) {
   const [transactionType, setTransactionType] = useState<"INCOME" | "EXPENSE">(
     "EXPENSE"
   );
 
   const [newTransaction, setNewTransaction] = useState<{
     date: DateObject;
-    payee: string;
+    title: string;
     category: string;
     amount: string | number;
   }>({
     date: new DateObject(),
-    payee: "",
+    title: "",
     category: "",
     amount: "",
   });
 
   const [formErrors, setFormErrors] = useState<{
-    payee?: string;
+    title?: string;
     amount?: string;
     category?: string;
   }>({});
@@ -60,11 +53,12 @@ export default function Modal({ onClose, addTransaction }: ModalProps) {
   }, []);
 
   const handleSubmit = async () => {
-    const errors: { payee?: string; amount?: string; category?: string } = {};
+    console.log("test");
+    const errors: { title?: string; amount?: string; category?: string } = {};
 
     const amount = Number(newTransaction.amount);
 
-    if (!newTransaction.payee) errors.payee = "پرداخت‌کننده را وارد کنید";
+    if (!newTransaction.title) errors.title = "پرداخت‌کننده را وارد کنید";
     if (isNaN(amount) || amount <= 0) errors.amount = "مبلغ معتبر وارد کنید";
     if (!newTransaction.category) errors.category = "دسته‌بندی را انتخاب کنید";
 
@@ -72,11 +66,11 @@ export default function Modal({ onClose, addTransaction }: ModalProps) {
       setFormErrors(errors);
       return;
     }
-
     const formatted = {
       ...newTransaction,
+      categoryId: newTransaction.category,
       amount,
-      date: newTransaction.date?.format("YYYY-MM-DD"),
+      date: newTransaction.date?.toDate().toISOString(),
       type: transactionType,
     };
 
@@ -88,7 +82,6 @@ export default function Modal({ onClose, addTransaction }: ModalProps) {
       });
 
       // اگر موفق بود، به state لوکال هم اضافه کن
-      addTransaction(formatted);
       onClose();
     } catch (error) {
       console.error("خطا در ثبت تراکنش:", error);
@@ -130,9 +123,13 @@ export default function Modal({ onClose, addTransaction }: ModalProps) {
           <label className="block text-sm mb-1">تاریخ</label>
           <DatePicker
             value={newTransaction.date}
-            onChange={(date) =>
-              setNewTransaction({ ...newTransaction, date: date as DateObject })
-            }
+            onChange={(date) => {
+              console.log(date);
+              setNewTransaction({
+                ...newTransaction,
+                date: date as DateObject,
+              });
+            }}
             calendar={persian}
             locale={persian_fa}
             inputClass="w-full border rounded p-2 text-right"
@@ -140,21 +137,21 @@ export default function Modal({ onClose, addTransaction }: ModalProps) {
           />
         </div>
 
-        {/* Payee */}
+        {/* title */}
         <div>
           <label className="block text-sm mb-1">
             {transactionType === "INCOME" ? "پرداخت‌کننده" : "هزینه بابت"}
           </label>
           <input
             type="text"
-            value={newTransaction.payee}
+            value={newTransaction.title}
             onChange={(e) =>
-              setNewTransaction({ ...newTransaction, payee: e.target.value })
+              setNewTransaction({ ...newTransaction, title: e.target.value })
             }
             className="w-full border rounded p-2 text-right"
           />
-          {formErrors.payee && (
-            <p className="text-red-500 text-sm">{formErrors.payee}</p>
+          {formErrors.title && (
+            <p className="text-red-500 text-sm">{formErrors.title}</p>
           )}
         </div>
 
@@ -172,7 +169,7 @@ export default function Modal({ onClose, addTransaction }: ModalProps) {
             {categories
               .filter((cat) => cat.type === transactionType)
               .map((cat) => (
-                <option key={cat.id} value={cat.name}>
+                <option key={cat.id} value={cat.id}>
                   {cat.name}
                 </option>
               ))}

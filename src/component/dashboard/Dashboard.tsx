@@ -85,36 +85,6 @@ export default function Dashboard() {
     fetchTransactions();
   }, []);
 
-  const handleAddTransaction = async (transaction: {
-    date: string;
-    payee: string;
-    category: string;
-    amount: number;
-    type: "INCOME" | "EXPENSE";
-  }) => {
-    try {
-      const res = await axios.post(
-        "http://localhost:5000/api/transaction",
-        {
-          title: transaction.payee,
-          amount: transaction.amount,
-          type: transaction.type,
-          categoryId: parseInt(transaction.category),
-          date: transaction.date,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-          },
-        }
-      );
-      setTransactions((prev) => [...prev, res.data as ITransaction]);
-    } catch (error) {
-      console.error("خطا در افزودن تراکنش:", error);
-    }
-  };
-  console.log({ transactions });
-
   // محاسبه داینامیک
   const totalIncome = transactions
     .filter((t) => t.type === "INCOME")
@@ -215,21 +185,26 @@ export default function Dashboard() {
                     </tr>
                   </thead>
                   <tbody>
-                    {transactions.map((transaction) => (
-                      <tr key={transaction.id} className="border-b">
-                        <td className="p-2">{transaction.category}</td>
-                        <td className="p-2">
-                          {transaction.amount.toLocaleString()}
-                        </td>
-                        <td className="p-2">
-                          {typeof transaction.date === "string"
-                            ? transaction.date
-                            : transaction.date instanceof Date
-                            ? transaction.date.toLocaleDateString()
-                            : ""}
-                        </td>
-                      </tr>
-                    ))}
+                    {transactions.map((transaction) => {
+                      console.log(transaction);
+                      return (
+                        <tr key={transaction.id} className="border-b">
+                          <td className="p-2">{transaction.category.name}</td>
+                          <td className="p-2">
+                            {transaction.amount.toLocaleString()}
+                          </td>
+                          <td className="p-2">
+                            {typeof transaction.date === "string"
+                              ? new Date(transaction.date).toLocaleDateString(
+                                  "fa-IR"
+                                )
+                              : transaction.date instanceof Date
+                              ? transaction.date.toLocaleDateString()
+                              : ""}
+                          </td>
+                        </tr>
+                      );
+                    })}
                   </tbody>
                 </table>
               )}
@@ -239,12 +214,7 @@ export default function Dashboard() {
       </div>
 
       {/* مدال اضافه کردن تراکنش */}
-      {showModal && (
-        <Modal
-          onClose={() => setShowModal(false)}
-          addTransaction={handleAddTransaction}
-        />
-      )}
+      {showModal && <Modal onClose={() => setShowModal(false)} />}
     </div>
   );
 }
