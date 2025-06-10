@@ -1,62 +1,64 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import DatePicker from "react-multi-date-picker";
 import persian from "react-date-object/calendars/persian";
 import persian_fa from "react-date-object/locales/persian_fa";
 import DateObject from "react-date-object";
-
-const incomeCategories = ["حقوق", "فروش", "هدیه", "سایر درآمدها"];
-const expenseCategories = [
-  "خوراک",
-  "مسکن",
-  "حمل و نقل",
-  "سرگرمی",
-  "موارد دیگر",
-];
+import axios from "axios";
+import { ICategory } from "../../interfaces/category";
 
 interface ModalProps {
   onClose: () => void;
-  onAdd: (transaction: {
-    date: string;
-    payee: string;
-    category: string;
-    amount: number;
-    type: "income" | "expense";
-  }) => void;
 }
 
-export default function Modal({ onClose, onAdd }: ModalProps) {
-  const [transactionType, setTransactionType] = useState<"income" | "expense">(
-    "expense"
+export default function Modal({ onClose }: ModalProps) {
+  const [transactionType, setTransactionType] = useState<"INCOME" | "EXPENSE">(
+    "EXPENSE"
   );
 
   const [newTransaction, setNewTransaction] = useState<{
     date: DateObject;
-    payee: string;
+    title: string;
     category: string;
     amount: string | number;
   }>({
     date: new DateObject(),
-    payee: "",
+    title: "",
     category: "",
     amount: "",
   });
 
   const [formErrors, setFormErrors] = useState<{
-    payee?: string;
+    title?: string;
     amount?: string;
     category?: string;
   }>({});
 
-  const categories =
-    transactionType === "income" ? incomeCategories : expenseCategories;
+  const [categories, setCategories] = useState<ICategory[]>([]);
 
-  const handleSubmit = () => {
-    const errors: { payee?: string; amount?: string; category?: string } = {};
+  const fetchCategories = async () => {
+    try {
+      const res = await axios.get("http://localhost:5000/api/category", {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+        },
+      });
+      setCategories(res.data as ICategory[]);
+    } catch (error) {
+      console.error("خطا:", error);
+    }
+  };
 
-    // تبدیل amount به عدد
+  useEffect(() => {
+    fetchCategories();
+  }, []);
+
+  const handleSubmit = async () => {
+    console.log("test");
+    const errors: { title?: string; amount?: string; category?: string } = {};
+
     const amount = Number(newTransaction.amount);
 
-    if (!newTransaction.payee) errors.payee = "پرداخت‌کننده را وارد کنید";
+    if (!newTransaction.title) errors.title = "پرداخت‌کننده را وارد کنید";
     if (isNaN(amount) || amount <= 0) errors.amount = "مبلغ معتبر وارد کنید";
     if (!newTransaction.category) errors.category = "دسته‌بندی را انتخاب کنید";
 
@@ -64,16 +66,27 @@ export default function Modal({ onClose, onAdd }: ModalProps) {
       setFormErrors(errors);
       return;
     }
-
     const formatted = {
       ...newTransaction,
-      amount, // مقدار amount به عدد
-      date: newTransaction.date?.format("YYYY-MM-DD"),
+      categoryId: newTransaction.category,
+      amount,
+      date: newTransaction.date?.toDate().toISOString(),
       type: transactionType,
     };
 
-    onAdd(formatted);
-    onClose();
+    try {
+      await axios.post("http://localhost:5000/api/transaction", formatted, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+        },
+      });
+
+      // اگر موفق بود، به state لوکال هم اضافه کن
+      onClose();
+    } catch (error) {
+      console.error("خطا در ثبت تراکنش:", error);
+      // اینجا می‌تونی پیام خطا نشون بدی یا مدیریت دیگه‌ای انجام بدی
+    }
   };
 
   return (
@@ -84,9 +97,9 @@ export default function Modal({ onClose, onAdd }: ModalProps) {
         {/* Tabs */}
         <div className="flex justify-center gap-4 mb-2">
           <button
-            onClick={() => setTransactionType("income")}
+            onClick={() => setTransactionType("INCOME")}
             className={`px-4 py-1 rounded-full text-sm font-medium ${
-              transactionType === "income"
+              transactionType === "INCOME"
                 ? "bg-green-500 text-white"
                 : "bg-gray-200 text-gray-700"
             }`}
@@ -94,9 +107,9 @@ export default function Modal({ onClose, onAdd }: ModalProps) {
             درآمد
           </button>
           <button
-            onClick={() => setTransactionType("expense")}
+            onClick={() => setTransactionType("EXPENSE")}
             className={`px-4 py-1 rounded-full text-sm font-medium ${
-              transactionType === "expense"
+              transactionType === "EXPENSE"
                 ? "bg-red-500 text-white"
                 : "bg-gray-200 text-gray-700"
             }`}
@@ -110,9 +123,13 @@ export default function Modal({ onClose, onAdd }: ModalProps) {
           <label className="block text-sm mb-1">تاریخ</label>
           <DatePicker
             value={newTransaction.date}
-            onChange={(date) =>
-              setNewTransaction({ ...newTransaction, date: date as DateObject })
-            }
+            onChange={(date) => {
+              console.log(date);
+              setNewTransaction({
+                ...newTransaction,
+                date: date as DateObject,
+              });
+            }}
             calendar={persian}
             locale={persian_fa}
             inputClass="w-full border rounded p-2 text-right"
@@ -120,21 +137,21 @@ export default function Modal({ onClose, onAdd }: ModalProps) {
           />
         </div>
 
-        {/* Payee */}
+        {/* title */}
         <div>
           <label className="block text-sm mb-1">
-            {transactionType === "income" ? "پرداخت‌کننده" : "هزینه بابت"}
+            {transactionType === "INCOME" ? "پرداخت‌کننده" : "هزینه بابت"}
           </label>
           <input
             type="text"
-            value={newTransaction.payee}
+            value={newTransaction.title}
             onChange={(e) =>
-              setNewTransaction({ ...newTransaction, payee: e.target.value })
+              setNewTransaction({ ...newTransaction, title: e.target.value })
             }
             className="w-full border rounded p-2 text-right"
           />
-          {formErrors.payee && (
-            <p className="text-red-500 text-sm">{formErrors.payee}</p>
+          {formErrors.title && (
+            <p className="text-red-500 text-sm">{formErrors.title}</p>
           )}
         </div>
 
@@ -149,11 +166,13 @@ export default function Modal({ onClose, onAdd }: ModalProps) {
             className="w-full border rounded p-2 text-right"
           >
             <option value="">-- انتخاب کنید --</option>
-            {categories.map((cat) => (
-              <option key={cat} value={cat}>
-                {cat}
-              </option>
-            ))}
+            {categories
+              .filter((cat) => cat.type === transactionType)
+              .map((cat) => (
+                <option key={cat.id} value={cat.id}>
+                  {cat.name}
+                </option>
+              ))}
           </select>
           {formErrors.category && (
             <p className="text-red-500 text-sm">{formErrors.category}</p>

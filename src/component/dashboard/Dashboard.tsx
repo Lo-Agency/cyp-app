@@ -1,5 +1,6 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+import axios from "axios";
 import {
   LineChart,
   Line,
@@ -11,23 +12,15 @@ import {
 } from "recharts";
 import Cards from "./Cards";
 import Modal from "./Modaltransaction";
-
-type Transaction = {
-  id: number;
-  category: string;
-  amount: number;
-  date: string;
-  type: "income" | "expense";
-};
+import { useUser } from "../../contexts/userContext";
+import { ITransaction } from "../../interfaces/transaction";
 
 const chartData = [
-  { name: "فروردین", income: 4000, expense: 2400 },
-  { name: "اردیبهشت", income: 3000, expense: 1398 },
-  { name: "خرداد", income: 2000, expense: 9800 },
-  { name: "تیر", income: 2780, expense: 3908 },
+  { name: "فروردین", INCOME: 4000, EXPENSE: 2400 },
+  { name: "اردیبهشت", INCOME: 3000, EXPENSE: 1398 },
+  { name: "خرداد", INCOME: 2000, EXPENSE: 9800 },
+  { name: "تیر", INCOME: 2780, EXPENSE: 3908 },
 ];
-
-// اینارو فعلا دستی وارد کردم برای دیدن UI
 const dashboardItems = [
   { title: "داشبورد", path: "/Dashboard" },
   { title: "تراکنش‌ها", path: "/transactions" },
@@ -37,33 +30,68 @@ const dashboardItems = [
 ];
 
 export default function Dashboard() {
-  const [userName] = useState("کاربر تست");
-  const [transactions, setTransactions] = useState<Transaction[]>([]);
+  const { user, setUser, logout } = useUser();
+  const [transactions, setTransactions] = useState<ITransaction[]>([]);
   const [showModal, setShowModal] = useState(false);
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const res = await fetch("http://localhost:5000/api/auth/me", {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+          },
+        });
+        if (!res.ok) throw new Error("خطا در دریافت اطلاعات کاربر");
+        const data = await res.json();
+        console.log("داده‌های کاربر:", data);
+        setUser({
+          name: data.name,
+          id: data.id,
+          email: data.email,
+          password: data.password,
+        });
+      } catch (err) {
+        console.error("خطا:", err);
+        // داخل پرانتز
+        setUser({
+          name: "کاربر ناشناس",
+          id: 0,
+          email: "",
+          password: "",
+        });
+      }
+    };
 
-  const handleAddTransaction = (transaction: {
-    date: string;
-    payee: string;
-    category: string;
-    amount: number;
-    type: "income" | "expense";
-  }) => {
-    setTransactions((prev) => [
-      ...prev,
-      {
-        ...transaction,
-        id: prev.length + 1,
-      },
-    ]);
+    fetchUser();
+  }, [setUser]);
+
+  const fetchTransactions = async () => {
+    try {
+      const res = await axios.get<ITransaction[]>(
+        "http://localhost:5000/api/transaction",
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+          },
+        }
+      );
+      setTransactions(res.data);
+    } catch (error) {
+      console.error("خطا در گرفتن تراکنش‌ها:", error);
+    }
   };
+
+  useEffect(() => {
+    fetchTransactions();
+  }, []);
 
   // محاسبه داینامیک
   const totalIncome = transactions
-    .filter((t) => t.type === "income")
+    .filter((t) => t.type === "INCOME")
     .reduce((sum, t) => sum + t.amount, 0);
 
   const totalExpense = transactions
-    .filter((t) => t.type === "expense")
+    .filter((t) => t.type === "EXPENSE")
     .reduce((sum, t) => sum + t.amount, 0);
 
   const budget = totalIncome - totalExpense;
@@ -79,6 +107,7 @@ export default function Dashboard() {
               <li key={index}>
                 <Link
                   to={item.path}
+                  onClick={item.title === "خروج" ? logout : undefined}
                   className="block p-2 rounded hover:bg-gray-100"
                 >
                   {item.title}
@@ -89,7 +118,9 @@ export default function Dashboard() {
         </div>
         <div className="flex-1 p-6">
           <div className="flex justify-between items-center mb-6">
-            <h2 className="text-2xl font-bold">خوش آمدید، {userName}</h2>
+            <h2 className="text-2xl font-bold">
+              خوش آمدید، {user?.name || "کاربر"}
+            </h2>
             <button
               className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-800"
               onClick={() => setShowModal(true)}
@@ -120,13 +151,13 @@ export default function Dashboard() {
               <Legend />
               <Line
                 type="monotone"
-                dataKey="income"
+                dataKey="INCOME"
                 stroke="#10B981"
                 name="درآمد"
               />
               <Line
                 type="monotone"
-                dataKey="expense"
+                dataKey="EXPENSE"
                 stroke="#EF4444"
                 name="هزینه"
               />
@@ -154,15 +185,26 @@ export default function Dashboard() {
                     </tr>
                   </thead>
                   <tbody>
-                    {transactions.map((transaction) => (
-                      <tr key={transaction.id} className="border-b">
-                        <td className="p-2">{transaction.category}</td>
-                        <td className="p-2">
-                          {transaction.amount.toLocaleString()}
-                        </td>
-                        <td className="p-2">{transaction.date}</td>
-                      </tr>
-                    ))}
+                    {transactions.map((transaction) => {
+                      console.log(transaction);
+                      return (
+                        <tr key={transaction.id} className="border-b">
+                          <td className="p-2">{transaction.category.name}</td>
+                          <td className="p-2">
+                            {transaction.amount.toLocaleString()}
+                          </td>
+                          <td className="p-2">
+                            {typeof transaction.date === "string"
+                              ? new Date(transaction.date).toLocaleDateString(
+                                  "fa-IR"
+                                )
+                              : transaction.date instanceof Date
+                              ? transaction.date.toLocaleDateString()
+                              : ""}
+                          </td>
+                        </tr>
+                      );
+                    })}
                   </tbody>
                 </table>
               )}
@@ -172,12 +214,7 @@ export default function Dashboard() {
       </div>
 
       {/* مدال اضافه کردن تراکنش */}
-      {showModal && (
-        <Modal
-          onClose={() => setShowModal(false)}
-          onAdd={handleAddTransaction}
-        />
-      )}
+      {showModal && <Modal onClose={() => setShowModal(false)} />}
     </div>
   );
 }

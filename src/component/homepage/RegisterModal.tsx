@@ -29,7 +29,7 @@ function RegisterModal({
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     const nameRegx = /^[آ-ی\s]{2,50}$/;
@@ -79,8 +79,37 @@ function RegisterModal({
 
     setError(newErrors);
 
+    //connect to backend when form is valid
     if (isValid) {
-      console.log("فرم معتبر است:", formData);
+      try {
+        const response = await fetch(
+          "http://localhost:5000/api/auth/register",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              name: formData.name,
+              email: formData.email,
+              password: formData.password,
+            }),
+          }
+        );
+
+        const data = await response.json();
+
+        if (response.ok) {
+          alert("ثبت‌نام با موفقیت انجام شد ✅");
+          onClose();
+          navigate("/dashboard");
+        } else {
+          alert(data.message || "خطا در ثبت‌نام ❌");
+        }
+      } catch (error) {
+        console.error("خطا:", error);
+        alert("ارتباط با سرور برقرار نشد ❌");
+      }
     }
   };
 

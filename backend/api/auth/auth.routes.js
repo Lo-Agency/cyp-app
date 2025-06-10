@@ -1,0 +1,122 @@
+import express from "express";
+import bcrypt from "bcrypt";
+import { generateTokens } from "../../utils/jwt";
+import {
+  addRefreshTokenToWhitelist,
+  findRefreshToken,
+  deleteRefreshTokenById,
+  revokeTokens,
+} from "./auth.services";
+import { verifyAccessToken } from "../../utils/jwt.js";
+
+const router = express.Router();
+import {
+  findUserByEmail,
+  createUserByEmailAndPassword,
+  findUserById,
+} from "../users/user.services.js";
+
+router.get("/me", verifyAccessToken, async (req, res, next) => {
+  try {
+    const user = await findUserById(req.user.id);
+    if (!user) return res.sendStatus(404);
+    res.json({
+      id: user.id,
+      name: user.name,
+      email: user.email,
+    });
+  } catch (err) {
+    next(err);
+  }
+});
+
+router.post("/register", async (req, res, next) => {
+  try {
+    const { email, password, name } = req.body;
+    if (!email || !password || !name) {
+      res.status(400);
+      throw new Error("You must provide an email and a password.");
+    }
+
+    const existingUser = await findUserByEmail(email);
+
+    if (existingUser) {
+      res.status(400);
+      throw new Error("Email already in use.");
+    }
+
+    const user = await createUserByEmailAndPassword({ email, password, name });
+    const { accessToken, refreshToken } = generateTokens(user);
+    await addRefreshTokenToWhitelist({ refreshToken, userId: user.id });
+
+    res.json({
+      accessToken,
+      refreshToken,
+    });
+  } catch (err) {
+    next(err);
+  }
+});
+
+router.post("/login", async (req, res, next) => {
+  try {
+    const { email, password } = req.body;
+
+    if (!email || !password) {
+      res.status(400);
+      throw new Error("Please provide email and password.");
+    }
+
+    const existingUser = await findUserByEmail(email);
+
+    if (!existingUser) {
+      res.status(401);
+      throw new Error("Invalid login credentials.");
+    }
+
+    const isPasswordValid = await bcrypt.compare(
+      password,
+      existingUser.password
+    );
+
+    if (!isPasswordValid) {
+      res.status(401);
+      throw new Error("Invalid login credentials.");
+    }
+
+    const { accessToken, refreshToken } = generateTokens(existingUser);
+    await addRefreshTokenToWhitelist({ refreshToken, userId: existingUser.id });
+
+    res.json({
+      accessToken,
+      refreshToken,
+    });
+  } catch (err) {
+    next(err);
+  }
+});
+
+
+router.post("/refresh", async (req, res, next) => {
+  try {
+    const { refreshToken } = req.body;
+    if (!refreshToken) {
+      return res.status(401).json({ message: "Refresh token required" });
+    }
+    const token = await findRefreshToken(refreshToken);
+    if (!token || token.revoked || token.expireAt < new Date()) {
+      return res.status(401).json({ message: "Invalid or expired refresh token" });
+    }
+    const user = await findUserById(token.userId);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    const { accessToken, refreshToken: newRefreshToken } = generateTokens(user);
+    await addRefreshTokenToWhitelist({ refreshToken: newRefreshToken, userId: user.id });
+    await deleteRefreshTokenById(token.id);
+    res.json({ accessToken, refreshToken: newRefreshToken });
+  } catch (err) {
+    next(err);
+  }
+});
+export default router;
