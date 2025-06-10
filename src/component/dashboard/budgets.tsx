@@ -139,7 +139,7 @@ function Budget() {
               setShowModal(true);
             }}
           >
-            افزودن بودجه جدید
+           بودجه‌بندی جدید
           </button>
           <Link
             to="/Dashboard"
@@ -165,7 +165,7 @@ function Budget() {
 
       {/* لیست بودجه‌ها */}
       <div className="bg-white p-6 rounded-xl shadow mb-6">
-        <h3 className="text-lg font-semibold text-gray-700 mb-4">لیست بودجه‌ها</h3>
+        <h3 className="text-lg font-semibold text-gray-700 mb-4">لیست بودجه‌بندی ها</h3>
         {budgets.length === 0 ? (
           <p className="text-gray-500">هیچ بودجه‌ای ثبت نشده است.</p>
         ) : (
