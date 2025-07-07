@@ -64,6 +64,7 @@ function LoginModal({
       localStorage.setItem("refreshToken", data.refreshToken);
 
       navigate("/dashboard");
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       if (err.message.includes("login")) {
         setEmailError("ایمیل یا رمز عبور اشتباه است.");
@@ -123,8 +124,9 @@ function LoginModal({
         <button
           onClick={handleLogin}
           disabled={loading}
-          className={`w-full py-2 rounded-md text-white ${loading ? "bg-gray-400 cursor-not-allowed" : "bg-teal-800"
-            }`}
+          className={`w-full py-2 rounded-md text-white ${
+            loading ? "bg-gray-400 cursor-not-allowed" : "bg-teal-800"
+          }`}
         >
           {loading ? "در حال ورود..." : "ورود"}
         </button>

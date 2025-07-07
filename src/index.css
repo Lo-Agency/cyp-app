@@ -1,5 +1,9 @@
 @import "tailwindcss";
 
+.btn {
+  @apply text-white px-4 py-2 rounded flex items-center gap-2 shadow;
+}
+
 @font-face {
   font-family: "Yekan";
   src: url("src/asset/font/Yekan.ttf") format("truetype");
@@ -9,25 +13,24 @@ body {
   font-family: "Yekan";
 }
 
-
 :root {
-  --color-primary: #27548A;
+  --color-primary: #27548a;
   /* دکمه‌ها و لینک‌ها */
-  --color-secondary: #DDA853;
+  --color-secondary: #dda853;
   /*hover*/
-  --color-background: #F8FAFC;
+  --color-background: #f8fafc;
   /* پس‌زمینه */
-  --color-accent: #E2E8F0;
+  --color-accent: #e2e8f0;
   /*فوتر ا */
-  --color-text-primary: #183B4E;
+  --color-text-primary: #183b4e;
   /*  تیترها */
-  --color-text-secondary: #4B5E6F;
+  --color-text-secondary: #4b5e6f;
   /*  توضیحات */
-  --color-error: #F87171;
+  --color-error: #f87171;
   /*  خطاها */
-  --color-highlight: #FCD34D;
+  --color-highlight: #fcd34d;
   /*  هایلایت */
-  --color-purple-accent: #A78BFA;
+  --color-purple-accent: #a78bfa;
   /*  افکت‌های خاص */
 }
 
@@ -36,7 +39,6 @@ body {
   color: var(--color-text-primary);
   font-family: "Yekan", sans-serif;
 }
-
 
 .nav-link {
   position: relative;
@@ -51,7 +53,7 @@ body {
 }
 
 .nav-link::after {
-  content: '';
+  content: "";
   position: absolute;
   width: 0;
   height: 2px;
@@ -79,7 +81,6 @@ button.hero-button:hover {
   box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
   transform: scale(1.05);
 }
-
 
 /* اضافی برای دکمه‌ها  */
 button.primary {
@@ -143,7 +144,7 @@ button.secondary:hover {
 }
 
 .footer-link::after {
-  content: '';
+  content: "";
   position: absolute;
   width: 0;
   height: 2px;
@@ -185,4 +186,7 @@ button.secondary:hover {
   .text-error {
     color: var(--color-error);
   }
+}
+.btn {
+  @apply text-white px-4 py-2 rounded flex items-center gap-2 shadow;
 }
