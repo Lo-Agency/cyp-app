@@ -5,9 +5,11 @@ import persian_fa from "react-date-object/locales/persian_fa";
 import DateObject from "react-date-object";
 import axios from "axios";
 import { ICategory } from "../../interfaces/category";
+import { ITransaction } from "../../interfaces/transaction";
 
 interface ModalProps {
   onClose: () => void;
+  transaction?: ITransaction;
 }
 
 export default function Modal({ onClose }: ModalProps) {
@@ -81,11 +83,9 @@ export default function Modal({ onClose }: ModalProps) {
         },
       });
 
-      // اگر موفق بود، به state لوکال هم اضافه کن
       onClose();
     } catch (error) {
       console.error("خطا در ثبت تراکنش:", error);
-      // اینجا می‌تونی پیام خطا نشون بدی یا مدیریت دیگه‌ای انجام بدی
     }
   };
 
