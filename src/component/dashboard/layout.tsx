@@ -17,34 +17,55 @@ const Layout = () => {
 
   return (
     <div className="min-h-screen bg-gray-100 p-6" dir="rtl">
-      <div className="bg-white rounded-2xl shadow flex overflow-hidden min-h-screen">
-        {/* Sidebar */}
-        <div className="w-64 bg-white border-r border-gray-300">
-          <h1 className="text-2xl font-bold mb-4 p-6">CYP</h1>
-          <ul className="space-y-2 p-4">
-            {dashboardItems.map((item, index) => (
-              <li key={index} className="flex items-center gap-2">
-                <img
-                src={item.icon}
-                className="w-5 h-5 "
+<header className="bg-white rounded-t-2xl shadow p-4 border-b border-gray-300 flex justify-between items-center">
+          <h1 className="text-2xl font-bold">CYP</h1>
+          <div className="flex items-center gap-4">
+            <button className="relative">
+              <img
+                src="src/asset/notification.svg"
+                alt="نوتیفیکیشن"
+                className="w-8 h-8"
               />
-                <Link
-                  to={item.path}
-                  onClick={item.title === "خروج" ? logout : undefined}
-                  className={`flex items-center gap-2 p-2 rounded hover:bg-gray-100 ${location.pathname === item.path ? "bg-blue-100 text-blue-600" : ""
+              <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">
+                3
+              </span>
+            </button>
+            <button className="relative">
+              <img
+                src="src/asset/account.svg"
+                alt="اکانت"
+                className="w-6 h-6"
+              />
+            </button>
+          </div>
+        </header>
+
+
+    <div className="bg-white rounded-b-2xl shadow flex overflow-hidden min-h-[calc(100vh-88px)]">
+          {/* Sidebar */}
+          <div className="w-64 bg-white border-r border-gray-300">
+            <ul className="space-y-2 p-4">
+              {dashboardItems.map((item, index) => (
+                <li key={index} className="flex items-center gap-2">
+                  <img src={item.icon} className="w-5 h-5" />
+                  <Link
+                    to={item.path}
+                    onClick={item.title === "خروج" ? logout : undefined}
+                    className={`flex items-center gap-2 p-2 rounded hover:bg-gray-100 ${
+                      location.pathname === item.path ? "bg-blue-100 text-blue-600" : ""
                     }`}
-                >
-                  {item.title}
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </div>
-        <div className="flex-1 p-6">
-          <Outlet />
+                  >
+                    {item.title}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+          <div className="flex-1 p-6">
+            <Outlet />
+          </div>
         </div>
       </div>
-    </div>
   );
 };
 
