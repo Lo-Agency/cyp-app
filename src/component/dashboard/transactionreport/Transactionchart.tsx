@@ -46,7 +46,7 @@ const TransactionChart = ({ transactions }: TransactionChartProps) => {
 
     const existing = acc.find((item) => item.date === date);
     if (existing) {
-      existing[transaction.type] += transaction.amount;
+      existing[transaction.type] += 1;
     } else {
       acc.push({
         date,
