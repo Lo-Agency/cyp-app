@@ -124,7 +124,6 @@ export default function Modal({ onClose }: ModalProps) {
           <DatePicker
             value={newTransaction.date}
             onChange={(date) => {
-              console.log(date);
               setNewTransaction({
                 ...newTransaction,
                 date: date as DateObject,
