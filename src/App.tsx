@@ -5,6 +5,7 @@ import HomePage from "./component/homepage/Index";
 import { UserProvider } from "./contexts/userContext";
 import Budget from "./component/dashboard/budgets";
 import Layout from "./component/dashboard/layout";
+import Transactionreport from "./component/dashboard/transactionreport/Transactionreport";
 
 function App() {
   return (
@@ -16,6 +17,8 @@ function App() {
           <Route element={<Layout />}>
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/budget" element={<Budget />} />
+          
+            <Route path="/transactions" element={<Transactionreport />} />
           </Route>
           <Route path="*" element={<NotFound />} />
         </Routes>

@@ -5,4 +5,5 @@ export interface ITransaction {
   amount: number;
   date: Date;
   type: "INCOME" | "EXPENSE";
+  user?: { name: string };
 }
