@@ -111,8 +111,22 @@ const TransactionReportPage = () => {
       <div className="flex justify-between items-center flex-wrap gap-4">
         <button
           onClick={() => setIsFilterModalOpen(true)}
-          className="bg-blue-500 text-white px-4 py-1 rounded hover:bg-blue-600"
+          className="flex items-center gap-2 border border-blue-500 text-blue-500 px-4 py-1 rounded-lg hover:bg-blue-50 transition"
         >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            strokeWidth={2}
+            stroke="currentColor"
+            className="w-5 h-5"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2a1 1 0 01-.293.707l-6.414 6.414A1 1 0 0014 13v4.586a1 1 0 01-.293.707l-2 2A1 1 0 0110 20v-7a1 1 0 00-.293-.707L3.293 6.707A1 1 0 013 6V4z"
+            />
+          </svg>
           فیلتر
         </button>
 
