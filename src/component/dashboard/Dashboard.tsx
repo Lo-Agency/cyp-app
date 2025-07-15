@@ -90,7 +90,7 @@ export default function Dashboard() {
 
   return (
     <div className="min-h-screen bg-gray-100 p-6" dir="rtl">
-      <div className="bg-white rounded-2xl shadow flex overflow-hidden min-h-screen">
+      <div className="bg-white rounded-2xl shadow flex min-h-screen">
         <div className="flex-1 p-6">
           <div className="flex justify-between items-center mb-6">
             <h2 className="text-2xl font-bold">
@@ -171,11 +171,11 @@ export default function Dashboard() {
                           <td className="p-2">
                             {typeof transaction.date === "string"
                               ? new Date(transaction.date).toLocaleDateString(
-                                "fa-IR"
-                              )
+                                  "fa-IR"
+                                )
                               : transaction.date instanceof Date
-                                ? transaction.date.toLocaleDateString()
-                                : ""}
+                              ? transaction.date.toLocaleDateString()
+                              : ""}
                           </td>
                         </tr>
                       );

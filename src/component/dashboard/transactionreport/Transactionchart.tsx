@@ -60,7 +60,7 @@ const TransactionChart = ({ transactions }: TransactionChartProps) => {
   return (
     <>
       <div
-        className="bg-white p-4 rounded-xl shadow w-full flex flex-row md:flex-row gap-x-60 "
+        className="bg-white p-4 rounded-xl shadow w-full flex flex-row md:flex-row gap-x-30 "
         dir="ltr"
       >
         <h2 className="font-semibold text-lg mb-4">Transaction Status</h2>
@@ -83,7 +83,7 @@ const TransactionChart = ({ transactions }: TransactionChartProps) => {
           </PieChart>
         </div>
         <div>
-          <ResponsiveContainer width={500} height={250}>
+          <ResponsiveContainer width={450} height={250}>
             <AreaChart data={areaData}>
               <defs>
                 <linearGradient id="colorIncome" x1="0" y1="0" x2="0" y2="1">
