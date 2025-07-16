@@ -21,6 +21,7 @@ model User {
   updatedAt     DateTime       @updatedAt
   transaction   Transaction[]
   budgets   Budget[]
+  goals     Goal[]  
 }
 
 model RefreshToken {
@@ -68,6 +69,17 @@ model Budget {
   categoryId Int
   amount    Float
   spent     Float     @default(0)
-  period    String    // مثلاً "monthly", "weekly"
+  period    String   
   createdAt DateTime  @default(now())
+}
+model Goal {
+  id           String   @id @default(uuid())
+  title        String
+  targetAmount Float
+  currentAmount Float   @default(0)
+  deadline     DateTime
+  userId       String
+  user         User     @relation(fields: [userId], references: [id])
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 }
