@@ -4,6 +4,7 @@ import {
     getUserDebts,
     updateDebt,
     deleteDebt,
+    payDebtInstallment,
 } from "./debt.services.js";
 import { verifyAccessToken } from "../../utils/jwt.js";
 
@@ -44,16 +45,28 @@ router.get("/", async (req, res, next) => {
 router.put("/:id", async (req, res, next) => {
     try {
         const { id } = req.params;
-        const { title, amount, interestRate, dueDate, creditor } = req.body;
+        const { title, amount, paidAmount, interestRate, dueDate, creditor } = req.body;
         const userId = req.user.id;
 
         const goal = await updateDebt(id, userId, {
-            title, amount, interestRate, dueDate, creditor
+            title, amount, paidAmount, interestRate, dueDate, creditor
         });
         res.json(debt);
     } catch (err) {
         next(err);
     }
+});
+router.post("/:id/pay", async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const { paymentAmount } = req.body;
+    const userId = req.user.id;
+
+    const debt = await payDebtInstallment(id, userId, { paymentAmount });
+    res.json(debt);
+  } catch (err) {
+    next(err);
+  }
 });
 
 router.delete("/:id", async (req, res, next) => {

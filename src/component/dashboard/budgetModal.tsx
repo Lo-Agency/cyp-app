@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { IBudget } from "../../interfaces/budget";
+import { BudgetPeriod, IBudget } from "../../interfaces/budget";
 import axios from "axios";
 import { ICategory } from "../../interfaces/category";
 
@@ -15,7 +15,7 @@ const BudgetModal = ({ onClose, addBudget, updateBudget, editingBudget }: Budget
   const [formData, setFormData] = useState({
     categoryId: 0,
     amount: 0,
-    period: "monthly" as "monthly" | "weekly" | "yearly",
+    period: BudgetPeriod.Monthly,
   });
   const [formErrors, setFormErrors] = useState<{ categoryId?: string; amount?: string; period?: string }>({});
 
@@ -41,10 +41,10 @@ const BudgetModal = ({ onClose, addBudget, updateBudget, editingBudget }: Budget
       setFormData({
         categoryId: editingBudget.category?.id || 0,
         amount: editingBudget.amount,
-        period: editingBudget.period || "monthly",
+        period: editingBudget.period || BudgetPeriod.Monthly,
       });
     } else {
-      setFormData({ categoryId: 0, amount: 0, period: "monthly" });
+      setFormData({ categoryId: 0, amount: 0, period: BudgetPeriod.Monthly});
     }
   }, [editingBudget]);
 
@@ -52,7 +52,8 @@ const BudgetModal = ({ onClose, addBudget, updateBudget, editingBudget }: Budget
     const errors: { categoryId?: string; amount?: string; period?: string } = {};
     if (formData.categoryId === 0) errors.categoryId = "لطفاً یک دسته‌بندی انتخاب کنید";
     if (formData.amount <= 0) errors.amount = "مبلغ بودجه باید بیشتر از صفر باشد";
-    if (!["monthly", "weekly", "yearly"].includes(formData.period)) errors.period = "بازه زمانی معتبر انتخاب کنید";
+    // سوال دارم
+    if (!Object.values(BudgetPeriod).includes(formData.period)) errors.period = "بازه زمانی معتبر انتخاب کنید";
     return errors;
   };
 
@@ -137,7 +138,7 @@ const BudgetModal = ({ onClose, addBudget, updateBudget, editingBudget }: Budget
             <label className="block text-sm font-medium text-gray-700 mb-1">بازه زمانی</label>
             <select
               value={formData.period}
-              onChange={(e) => setFormData({ ...formData, period: e.target.value as "monthly" | "weekly" | "yearly" })}
+              onChange={(e) => setFormData({ ...formData, period: e.target.value as BudgetPeriod})}
               className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
             >
               <option value="monthly">ماهانه</option>

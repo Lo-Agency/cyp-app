@@ -56,4 +56,17 @@ router.put("/:id", async (req, res, next) => {
   }
 });
 
+router.delete("/:id", async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const userId = req.user.id;
+    const budget = await db.budget.delete({
+      where: { id, userId },
+    });
+    res.json({ message: "بودجه با موفقیت حذف شد" });
+  } catch (err) {
+    next(err);
+  }
+});
+
 export default router;

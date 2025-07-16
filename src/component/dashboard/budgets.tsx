@@ -4,7 +4,7 @@ import BudgetModal from "./budgetModal";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { ITransaction } from "../../interfaces/transaction";
-import { IBudget } from "../../interfaces/budget";
+import { BudgetPeriod, IBudget } from "../../interfaces/budget";
 import Cards from "./Cards";
 
 function Budget() {
@@ -67,7 +67,7 @@ function Budget() {
   useEffect(() => {
     const fetchBudgets = async () => {
       try {
-        const res = await axios.get("http://localhost:5000/api/budget", {
+        const res = await axios.get<IBudget[]>("http://localhost:5000/api/budget", {
           headers: { Authorization: `Bearer ${localStorage.getItem("accessToken")}` },
         });
         setBudgets(res.data);
@@ -81,13 +81,13 @@ function Budget() {
     const now = new Date();
     const isSamePeriod = (date: string | Date) => {
       const txDate = typeof date === "string" ? new Date(date) : date;
-      if (budget.period === "monthly") {
+      if (budget.period === BudgetPeriod.Monthly) {
         return txDate.getMonth() === now.getMonth() && txDate.getFullYear() === now.getFullYear();
-      } else if (budget.period === "weekly") {
+      } else if (budget.period === BudgetPeriod.Weekly) {
         const weekStart = new Date(now.setDate(now.getDate() - now.getDay()));
         const weekEnd = new Date(now.setDate(now.getDate() + 6));
         return txDate >= weekStart && txDate <= weekEnd;
-      } else if (budget.period === "yearly") {
+      } else if (budget.period === BudgetPeriod.Yearly) {
         return txDate.getFullYear() === now.getFullYear();
       }
       return true;
@@ -107,16 +107,16 @@ function Budget() {
   const remainingBudget = totalIncome - totalExpense
   // حساب کردن ماهانه
   const totalMonthlyBudget = budgets
-    .filter((b) => b.period === "monthly" || filterPeriod === "all")
+    .filter((b) => b.period === BudgetPeriod.Monthly || filterPeriod === "all")
     .reduce((sum, b) => sum + b.amount, 0);
   const totalSpent = budgets
-    .filter((b) => b.period === "monthly" || filterPeriod === "all")
+    .filter((b) => b.period === BudgetPeriod.Monthly|| filterPeriod === "all")
     .reduce((sum, b) => sum + calculateSpent(b), 0);
   const percent = totalMonthlyBudget ? ((totalSpent / totalMonthlyBudget) * 100).toFixed(1) : "0";
   // اضافه کردن
   const addBudget = async (newBudget: IBudget) => {
     try {
-      const res = await axios.post("http://localhost:5000/api/budget", newBudget, {
+      const res = await axios.post<IBudget>("http://localhost:5000/api/budget", newBudget, {
         headers: { Authorization: `Bearer ${localStorage.getItem("accessToken")}` },
       });
       setBudgets((prev) => [...prev, { ...res.data, spent: calculateSpent(res.data) }]);
@@ -131,7 +131,7 @@ function Budget() {
   //   اپدیت 
   const updateBudget = async (updatedBudget: IBudget) => {
     try {
-      const res = await axios.put(
+      const res = await axios.put<IBudget>(
         `http://localhost:5000/api/budget/${updatedBudget.id}`,
         updatedBudget,
         {
@@ -192,7 +192,7 @@ function Budget() {
           <h3 className="text-lg font-semibold text-gray-700">خلاصه بودجه</h3>
           <select
             value={filterPeriod}
-            onChange={(e) => setFilterPeriod(e.target.value as "all" | "monthly" | "weekly" | "yearly")}
+            onChange={(e) => setFilterPeriod(e.target.value as BudgetPeriod | "all")}
             className="border rounded-lg p-2 text-sm"
           >
             <option value="all">همه بازه‌ها</option>

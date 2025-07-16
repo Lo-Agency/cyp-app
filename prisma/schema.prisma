@@ -90,6 +90,7 @@ model Debt {
  title        String
  amount       Float
  dueDate      DateTime
+ paidAmount   Float    @default(0)
  creditor     String
  userId       String
  user         User     @relation(fields: [userId], references: [id])
