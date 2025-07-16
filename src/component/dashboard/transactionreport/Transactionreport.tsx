@@ -8,7 +8,6 @@ import DatePicker from "react-multi-date-picker";
 import DateObject from "react-date-object";
 import persian from "react-date-object/calendars/persian";
 import persian_fa from "react-date-object/locales/persian_fa";
-import * as XLSX from "xlsx";
 
 const ITEMS_PER_PAGE = 5;
 
@@ -25,6 +24,7 @@ const TransactionReportPage = () => {
     "all"
   );
   const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedTransaction, setSelectedTransaction] =
@@ -69,10 +69,29 @@ const TransactionReportPage = () => {
   };
 
   const handleExportExcel = () => {
-    const worksheet = XLSX.utils.json_to_sheet(filteredTransactions);
-    const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, "Transactions");
-    XLSX.writeFile(workbook, "transactions.xlsx");
+    setIsLoading(true);
+
+    // کد دانلود فایل اکسل خودت رو اینجا قرار بده.
+    // فرض مثال: ساخت Blob و دانلود فایل
+    const fileName = "sample.xlsx";
+    const fileContent = "..."; // این قسمت رو با محتوای واقعی فایل جایگزین کن
+
+    const blob = new Blob([fileContent], {
+      type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    });
+    const url = window.URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = fileName;
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    window.URL.revokeObjectURL(url);
+
+    // بعد از 3 ثانیه انیمیشن رو متوقف کن
+    setTimeout(() => {
+      setIsLoading(false);
+    }, 3000);
   };
 
   const handleEdite = (transaction: ITransaction) => {
@@ -132,15 +151,18 @@ const TransactionReportPage = () => {
 
         <button
           onClick={handleExportExcel}
-          className="bg-green-500 text-white px-4 py-1 rounded hover:bg-green-600"
+          disabled={isLoading}
+          className={`bg-green-500 text-white px-4 py-1 rounded hover:bg-green-600 ${
+            isLoading ? "opacity-50 cursor-not-allowed" : ""
+          }`}
         >
-          دریافت Excel
+          {isLoading ? "در حال دریافت..." : "دریافت Excel"}
         </button>
       </div>
 
       {/* modal فیلتر */}
       {isFilterModalOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-30 flex justify-center items-center z-50">
+        <div className="fixed inset-0 bg-opacity-30 backdrop-blur-sm flex items-center justify-center z-50">
           <div className="bg-white rounded-lg p-6 w-full max-w-md space-y-4 shadow-xl relative">
             <button
               onClick={() => setIsFilterModalOpen(false)}
