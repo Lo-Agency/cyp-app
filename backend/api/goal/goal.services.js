@@ -13,14 +13,6 @@ export const createGoal = async ({
   if (!deadline) throw new Error("مهلت الزامی است");
   if (!userId) throw new Error("شناسه کاربر الزامی است");
 
-  console.log("Creating goal:", {
-    title,
-    targetAmount,
-    currentAmount,
-    deadline,
-    userId,
-  });
-
   return db.goal.create({
     data: {
       title,

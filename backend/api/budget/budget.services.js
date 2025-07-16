@@ -2,20 +2,20 @@ import { db } from "../../utils/db";
 
 export const createBudget = async ({
   amount,
-      categoryId,
-      userId,
-      spent,
-      period,
+  categoryId,
+  userId,
+  spent,
+  period,
 }) => {
   if (!amount || amount <= 0) throw new Error("Amount must be positive");
   if (!categoryId) throw new Error("Category ID is required");
   if (!["monthly", "weekly", "yearly"].includes(period)) throw new Error("Invalid period");
   console.log("Creating budget:", {
-   amount,
-      categoryId,
-      userId,
-      spent,
-      period,
+    amount,
+    categoryId,
+    userId,
+    spent,
+    period,
   });
   return db.budget.create({
     data: {
