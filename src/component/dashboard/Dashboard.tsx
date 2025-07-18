@@ -35,7 +35,6 @@ export default function Dashboard() {
         });
         if (!res.ok) throw new Error("خطا در دریافت اطلاعات کاربر");
         const data = await res.json();
-        console.log("داده‌های کاربر:", data);
         setUser({
           name: data.name,
           id: data.id,
@@ -161,7 +160,6 @@ export default function Dashboard() {
                   </thead>
                   <tbody>
                     {transactions.map((transaction) => {
-                      console.log(transaction);
                       return (
                         <tr key={transaction.id} className="border-b">
                           <td className="p-2">{transaction.category.name}</td>

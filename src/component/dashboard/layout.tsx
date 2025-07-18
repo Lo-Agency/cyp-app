@@ -8,7 +8,7 @@ const dashboardItems = [
     path: "/transactions",
     icon: "src/asset/transaction.svg",
   },
-  { title: "گزارش‌ها", path: "/reports", icon: "src/asset/report.svg" },
+  { title: "گزارش‌ها", path: "/report", icon: "src/asset/report.svg" },
   { title: "بودجه", path: "/budget", icon: "src/asset/budget.svg" },
   { title: "اهداف مالی", path: "/goals", icon: "src/asset/goal.svg" },
   { title: "مدیریت بدهی", path: "/debt", icon: "src/asset/loan.svg" },
