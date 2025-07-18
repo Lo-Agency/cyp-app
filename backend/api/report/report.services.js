@@ -5,11 +5,11 @@ export const getReportData = async () => {
   const budget = await db.budget.findFirst();
 
   const income = transactions
-    .filter((t) => t.type === "income")
+    .filter((t) => t.type === "INCOME")
     .reduce((sum, t) => sum + t.amount, 0);
 
   const expense = transactions
-    .filter((t) => t.type === "expense")
+    .filter((t) => t.type === "EXPENSE")
     .reduce((sum, t) => sum + t.amount, 0);
 
   const deficit = budget ? budget.amount - expense : 0;
@@ -20,7 +20,7 @@ export const getReportData = async () => {
   }));
 
   const barChart = transactions
-    .filter((t) => t.type === "income")
+    .filter((t) => t.type === "INCOME")
     .map((t) => ({
       name: new Date(t.date).toLocaleDateString("fa-IR"),
       value: t.amount,
