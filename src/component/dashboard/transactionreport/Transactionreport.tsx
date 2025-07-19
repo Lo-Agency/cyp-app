@@ -51,12 +51,17 @@ const TransactionReportPage = () => {
 
     fetchTransactions();
   }, []);
-
   const handleFilter = () => {
     const result = transactions.filter((t) => {
       const date = new DateObject(t.date);
-      const matchDate =
-        (!startDate || date >= startDate) && (!endDate || date <= endDate);
+
+      const start = startDate ? new DateObject(startDate) : null;
+      const end = endDate ? new DateObject(endDate) : null;
+
+      if (start) start.set({ hour: 0, minute: 0, second: 0, millisecond: 0 });
+      if (end) end.set({ hour: 23, minute: 59, second: 59, millisecond: 999 });
+
+      const matchDate = (!start || date >= start) && (!end || date <= end);
 
       const matchType =
         typeFilter === "all" || t.type.toLowerCase() === typeFilter;

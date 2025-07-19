@@ -5,7 +5,8 @@ const router = express.Router();
 
 router.get("/", async (req, res) => {
   try {
-    const reportData = await getReportData();
+    const { filter = "monthly" } = req.query; // پیش‌فرض ماهانه
+    const reportData = await getReportData(filter);
     res.json(reportData);
   } catch (error) {
     console.error("Report Error:", error);

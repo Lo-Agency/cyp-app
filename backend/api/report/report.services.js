@@ -1,7 +1,41 @@
 import { db } from "../../utils/db.js";
 
-export const getReportData = async () => {
-  const transactions = await db.transaction.findMany();
+export const getReportData = async (filter = "monthly") => {
+  const now = new Date();
+  let startDate;
+
+  switch (filter) {
+    case "daily":
+      startDate = new Date(now);
+      startDate.setDate(startDate.getDate() - 6); // 7 روز اخیر
+      break;
+    case "weekly":
+      startDate = new Date(now);
+      startDate.setDate(startDate.getDate() - 30); // 4 هفته اخیر
+      break;
+    case "monthly":
+      startDate = new Date(now);
+      startDate.setMonth(startDate.getMonth() - 5); // 6 ماه اخیر
+      break;
+    case "yearly":
+      startDate = new Date(now);
+      startDate.setFullYear(startDate.getFullYear() - 1); // یک سال اخیر
+      break;
+    default:
+      startDate = new Date(now);
+      startDate.setMonth(startDate.getMonth() - 5);
+  }
+
+  // فیلتر کردن تراکنش‌ها بر اساس بازه زمانی
+  const transactions = await db.transaction.findMany({
+    where: {
+      date: {
+        gte: startDate,
+        lte: now,
+      },
+    },
+  });
+
   const budget = await db.budget.findFirst();
 
   const income = transactions
