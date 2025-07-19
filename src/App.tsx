@@ -6,23 +6,24 @@ import { UserProvider } from "./contexts/userContext";
 import Budget from "./component/dashboard/budgets";
 import Layout from "./component/dashboard/layout";
 import Transactionreport from "./component/dashboard/transactionreport/Transactionreport";
+import Report from "./component/dashboard/Report";
 
 function App() {
   return (
     <>
-    <UserProvider>
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<HomePage />} />
-          <Route element={<Layout />}>
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/budget" element={<Budget />} />
-          
-            <Route path="/transactions" element={<Transactionreport />} />
-          </Route>
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </BrowserRouter>
+      <UserProvider>
+        <BrowserRouter>
+          <Routes>
+            <Route path="/" element={<HomePage />} />
+            <Route element={<Layout />}>
+              <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/budget" element={<Budget />} />
+              <Route path="/transactions" element={<Transactionreport />} />
+              <Route path="/report" element={<Report />} />
+            </Route>
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </BrowserRouter>
       </UserProvider>
     </>
   );

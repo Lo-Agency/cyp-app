@@ -50,7 +50,9 @@ const BudgetModal = ({
       setFormData({
         categoryId: editingBudget.category?.id || 0,
         amount: editingBudget.amount,
-        period: editingBudget.period || "monthly",
+        period:
+          (editingBudget.period as "monthly" | "weekly" | "yearly") ||
+          "monthly",
       });
     } else {
       setFormData({ categoryId: 0, amount: 0, period: "monthly" });
