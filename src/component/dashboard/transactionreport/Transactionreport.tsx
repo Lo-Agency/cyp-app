@@ -132,7 +132,7 @@ const TransactionReportPage = () => {
   return (
     <div className="p-6 space-y-6">
       {/* header with filter & export */}
-      <div className="flex justify-between items-center flex-wrap gap-4">
+      <div className="flex justify-between items-center overflow-x-auto flex-wrap gap-4">
         <button
           onClick={() => setIsFilterModalOpen(true)}
           className="flex items-center gap-2 border border-blue-500 text-blue-500 px-4 py-1 rounded-lg hover:bg-blue-50 transition"
