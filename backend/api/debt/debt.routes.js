@@ -26,7 +26,7 @@ router.post("/", async (req, res, next) => {
             creditor,
             userId,
         });
-        res.status(201).json(goal);
+        res.status(201).json(debt);
     } catch (err) {
         next(err);
     }

@@ -19,8 +19,9 @@ export const createDebt = async ({
       title,
       amount,
       paidAmount: 0,
+      remainingAmount: amount,
       interestRate: interestRate || 0,
-      dueDate: new Date(deadline),
+      dueDate: new Date(dueDate),
       creditor,
       user: {
         connect: { id: userId },
@@ -30,7 +31,7 @@ export const createDebt = async ({
 };
 
 export const getUserDebts = async (userId) => {
-  return db.debt.findMany({
+  const debts = await db.debt.findMany({
     where: { userId },
     include: {
       user: {
@@ -38,6 +39,10 @@ export const getUserDebts = async (userId) => {
       },
     },
   });
+  return debts.map((debt) => ({
+    ...debt,
+    isDueSoon: new Date(debt.dueDate) < new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+  }));
 };
 
 export const updateDebt = async (id, userId, {
@@ -62,7 +67,7 @@ export const updateDebt = async (id, userId, {
       amount,
       paidAmount: paidAmount || 0,
       interestRate: interestRate || 0,
-      dueDate: new Date(deadline),
+      dueDate: new Date(dueDate),
       creditor,
     },
   });

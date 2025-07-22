@@ -7,6 +7,7 @@ import Budget from "./component/dashboard/budgets";
 import Layout from "./component/dashboard/layout";
 import Transactionreport from "./component/dashboard/transactionreport/Transactionreport";
 import Goal from "./component/dashboard/goal";
+import Debt from "./component/dashboard/debt";
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
           
             <Route path="/transactions" element={<Transactionreport />} />
             <Route path="/goals" element={<Goal />} />
+            <Route path="/debt" element={<Debt />} />
           </Route>
           <Route path="*" element={<NotFound />} />
         </Routes>
