@@ -8,7 +8,6 @@ import Layout from "./component/dashboard/layout";
 import Transactionreport from "./component/dashboard/transactionreport/Transactionreport";
 import Report from "./component/dashboard/Report";
 import Privateroute from "./component/dashboard/PrivateRoute";
-import LoginModal from "./component/homepage/LoginModal";
 
 function App() {
   return (
@@ -17,19 +16,6 @@ function App() {
         <BrowserRouter>
           <Routes>
             <Route path="/" element={<HomePage />} />
-            <Route
-              path="/login"
-              element={
-                <LoginModal
-                  onClose={function (): void {
-                    throw new Error("Function not implemented.");
-                  }}
-                  onSwitchToRegister={function (): void {
-                    throw new Error("Function not implemented.");
-                  }}
-                />
-              }
-            />
             <Route
               element={
                 <Privateroute>

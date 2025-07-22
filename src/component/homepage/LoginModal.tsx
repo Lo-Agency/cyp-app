@@ -1,6 +1,9 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import logo from "../../asset/logo.png";
+import { IUser } from "../../interfaces/user";
+import { useUser } from "../../contexts/userContext";
+import axios from "axios";
 
 function LoginModal({
   onClose,
@@ -14,7 +17,7 @@ function LoginModal({
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
-
+  const { setUser } = useUser();
   const navigate = useNavigate();
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -66,7 +69,13 @@ function LoginModal({
 
       localStorage.setItem("accessToken", data.accessToken);
       localStorage.setItem("refreshToken", data.refreshToken);
-
+      const getuserRes = await axios.get<IUser>(
+        "http://localhost:5000/api/auth/me",
+        {
+          headers: { Authorization: `Bearer ${data.accessToken}` },
+        }
+      );
+      setUser(getuserRes.data);
       navigate("/dashboard");
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {

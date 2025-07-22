@@ -7,10 +7,9 @@ type privateRouteProps = {
 };
 const PrivateRoute = ({ children }: privateRouteProps) => {
   const { user, loading } = useUser();
-
   if (loading) return <div>در حال بارگذاری...</div>;
 
-  return user ? children : <Navigate to="/login" />;
+  return user ? children : <Navigate to="/" />;
 };
 
 export default PrivateRoute;
