@@ -83,7 +83,7 @@ function LoginModal({
         setEmailError("ایمیل یا رمز عبور اشتباه است.");
         setPasswordError(" ");
       } else {
-        alert("خطایی رخ داد: " + err.message);
+        alert("ایمیل یا پسورد اشتباه هست ");
       }
     } finally {
       setLoading(false);

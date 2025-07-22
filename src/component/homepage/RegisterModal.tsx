@@ -96,18 +96,14 @@ function RegisterModal({
             }),
           }
         );
-
-        const data = await response.json();
-
         if (response.ok) {
           alert("ثبت‌نام با موفقیت انجام شد ✅");
           onClose();
           navigate("/dashboard");
         } else {
-          alert(data.message || "خطا در ثبت‌نام ❌");
+          alert("خطا در ثبت‌نام مجدد تلاش کنید ❌");
         }
-      } catch (error) {
-        console.error("خطا:", error);
+      } catch {
         alert("ارتباط با سرور برقرار نشد ❌");
       }
     }

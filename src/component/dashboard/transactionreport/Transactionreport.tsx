@@ -116,8 +116,7 @@ const TransactionReportPage = () => {
       setTransactions(updated);
       setFilteredTransactions(updated);
       alert("تراکنش با موفقیت حذف شد.");
-    } catch (err) {
-      console.log("❌ خطا در حذف تراکنش:", err);
+    } catch {
       alert("خطا در حذف تراکنش. لطفاً دوباره تلاش کنید.");
     }
   };

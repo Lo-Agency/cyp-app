@@ -1,7 +1,9 @@
+import { ICategory } from "./category";
+
 export interface ITransaction {
   categoryId: number;
   id: number;
-  category: { name: string };
+  category: ICategory;
   amount: number;
   date: Date;
   type: "INCOME" | "EXPENSE";
