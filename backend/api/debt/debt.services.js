@@ -18,8 +18,8 @@ export const createDebt = async ({
     data: {
       title,
       amount,
-      paidAmount: 0,
-      remainingAmount: amount,
+      paidAmount: paidAmount || 0 ,
+      remainingAmount: amount- (paidAmount || 0),
       interestRate: interestRate || 0,
       dueDate: new Date(dueDate),
       creditor,

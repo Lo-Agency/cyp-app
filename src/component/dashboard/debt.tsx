@@ -5,13 +5,44 @@ import { Link } from "react-router-dom";
 import { IDebt } from "../../interfaces/debt";
 import DebtModal from "./debtModal";
 function Debt() {
-  const { user } = useUser();
+  const { user, setUser } = useUser();
   const [debts, setDebts] = useState<IDebt[]>([]);
   const [showModal, setShowModal] = useState(false);
   const [editingDebt, setEditingDebt] = useState<IDebt | null>(null);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState<string | null>(null);
   const [showPaymentModal, setShowPaymentModal] = useState<string | null>(null);
   const [paymentAmount, setPaymentAmount] = useState<number>(0);
+
+
+   useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const res = await fetch("http://localhost:5000/api/auth/me", {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+          },
+        });
+        if (!res.ok) throw new Error("خطا در دریافت اطلاعات کاربر");
+        const data = await res.json();
+        setUser({
+          name: data.name,
+          id: String(data.id),
+          email: data.email,
+          password: data.password,
+        });
+      }
+      catch (err) {
+        setUser({
+          name: "کاربر ناشناس",
+          id: "",
+          email: "",
+          password: "",
+        });
+      }
+    };
+    fetchUser();
+  }, [setUser]);
+
 
   useEffect(() => {
     const fetchDebts = async () => {
@@ -32,6 +63,7 @@ function Debt() {
       const res = await axios.post<IDebt>("http://localhost:5000/api/debt", newDebt, {
         headers: { Authorization: `Bearer ${localStorage.getItem("accessToken")}` },
       });
+      console.log("Response from server:", res.data);
       setDebts((prev) => [...prev, res.data]);
     } catch (err) {
       console.error("خطا در افزودن بدهی:", err);

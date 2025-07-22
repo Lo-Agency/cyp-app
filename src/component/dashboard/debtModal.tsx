@@ -4,6 +4,7 @@ import persian from "react-date-object/calendars/persian";
 import persian_fa from "react-date-object/locales/persian_fa";
 import DateObject from "react-date-object";
 import { IDebt } from "../../interfaces/debt";
+import { useUser } from "../../contexts/userContext";
 
 interface DebtModalProps {
   onClose: () => void;
@@ -13,6 +14,7 @@ interface DebtModalProps {
 }
 
 const DebtModal = ({ onClose, addDebt, updateDebt, editingDebt }: DebtModalProps) => {
+ const { user } = useUser();
   const [formData, setFormData] = useState({
     title: "",
     amount: 0,
@@ -83,11 +85,12 @@ const DebtModal = ({ onClose, addDebt, updateDebt, editingDebt }: DebtModalProps
       interestRate: formData.interestRate,
       dueDate: formData.dueDate.toDate().toISOString(),
       creditor: formData.creditor,
-      userId: "",
+      userId: String(user?.id) || "",
+      remainingAmount: formData.amount - formData.paidAmount,
       user: {
         id: "",
-        name: "",
-      },
+        name: ""
+      }
     };
 
     if (editingDebt) {

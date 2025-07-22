@@ -51,7 +51,7 @@ router.put("/:id", async (req, res, next) => {
         const goal = await updateDebt(id, userId, {
             title, amount, paidAmount, interestRate, dueDate, creditor
         });
-        res.json(debt);
+        res.json(upadated);
     } catch (err) {
         next(err);
     }
