@@ -1,6 +1,9 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import logo from "../../asset/logo.png";
+import { IUser } from "../../interfaces/user";
+import { useUser } from "../../contexts/userContext";
+import axios from "axios";
 
 function LoginModal({
   onClose,
@@ -14,8 +17,12 @@ function LoginModal({
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
-
+  const { setUser } = useUser();
   const navigate = useNavigate();
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+  };
 
   const handleLogin = async () => {
     setEmailError("");
@@ -62,7 +69,13 @@ function LoginModal({
 
       localStorage.setItem("accessToken", data.accessToken);
       localStorage.setItem("refreshToken", data.refreshToken);
-
+      const getuserRes = await axios.get<IUser>(
+        "http://localhost:5000/api/auth/me",
+        {
+          headers: { Authorization: `Bearer ${data.accessToken}` },
+        }
+      );
+      setUser(getuserRes.data);
       navigate("/dashboard");
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
@@ -70,7 +83,7 @@ function LoginModal({
         setEmailError("ایمیل یا رمز عبور اشتباه است.");
         setPasswordError(" ");
       } else {
-        alert("خطایی رخ داد: " + err.message);
+        alert("ایمیل یا پسورد اشتباه هست ");
       }
     } finally {
       setLoading(false);
@@ -78,70 +91,74 @@ function LoginModal({
   };
 
   return (
-    <div className="fixed inset-0 bg-opacity-30 backdrop-blur-sm flex items-center justify-center z-50">
-      <div className="bg-white/20 backdrop-blur-md border border-white/30 text-white p-8 rounded-xl w-[400px] relative shadow-xl">
-        <button
-          className="absolute top-2 right-3 text-black text-xl"
-          onClick={() => {
-            onClose();
-            navigate("/");
-          }}
-        >
-          ✖
-        </button>
-        <div>
-          <img src={logo} alt="logo" className="block w-28 h-20" />
-        </div>
-        <h2 dir="rtl" className="text-2xl text-black font-semibold mb-1">
-          خوش آمدید!
-        </h2>
-        <p className="text-sm text-black mb-6" dir="rtl">
-          لطفا اطلاعات خود را در کادر پایین وارد کنید
-        </p>
-
-        <input
-          type="email"
-          placeholder="ایمیل خود را وارد کنید"
-          className="w-full mb-1 px-4 py-2 border text-gray-950 rounded-md bg-gray-50"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-        />
-        {emailError && (
-          <div className="text-red-500 text-sm mb-3">{emailError}</div>
-        )}
-
-        <input
-          type="password"
-          placeholder="پسورد خودرا وارد کنید"
-          className="w-full mb-1 px-4 py-2 border text-gray-900 rounded-md bg-gray-50"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
-        {passwordError && (
-          <div className="text-red-500 text-sm mb-3">{passwordError}</div>
-        )}
-
-        <button
-          onClick={handleLogin}
-          disabled={loading}
-          className={`w-full py-2 rounded-md text-white ${
-            loading ? "bg-gray-400 cursor-not-allowed" : "bg-teal-800"
-          }`}
-        >
-          {loading ? "در حال ورود..." : "ورود"}
-        </button>
-
-        <div className="mt-4 text-center text-sm text-gray-600">
-          هیچ اکانتی ندارید؟{" "}
-          <span
-            onClick={onSwitchToRegister}
-            className="text-blue-600 cursor-pointer"
+    <form onSubmit={handleSubmit}>
+      <div className="fixed inset-0 bg-opacity-30 backdrop-blur-sm flex items-center justify-center z-50">
+        <div className="bg-white/20 backdrop-blur-md border border-white/30 text-white p-8 rounded-xl w-[400px] relative shadow-xl">
+          <button
+            className="absolute top-2 right-3 text-black text-xl"
+            onClick={() => {
+              onClose();
+              navigate("/");
+            }}
           >
-            ثبت نام
-          </span>
+            ✖
+          </button>
+          <div>
+            <img src={logo} alt="logo" className="block w-28 h-20" />
+          </div>
+          <h2 dir="rtl" className="text-2xl text-black font-semibold mb-1">
+            خوش آمدید!
+          </h2>
+          <p className="text-sm text-black mb-6" dir="rtl">
+            لطفا اطلاعات خود را در کادر پایین وارد کنید
+          </p>
+
+          <input
+            type="email"
+            placeholder="ایمیل خود را وارد کنید"
+            className="w-full mb-1 px-4 py-2 border text-gray-950 rounded-md bg-gray-50"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            autoComplete="current-password"
+          />
+          {emailError && (
+            <div className="text-red-500 text-sm mb-3">{emailError}</div>
+          )}
+
+          <input
+            type="password"
+            placeholder="پسورد خودرا وارد کنید"
+            className="w-full mb-1 px-4 py-2 border text-gray-900 rounded-md bg-gray-50"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            autoComplete="current-password"
+          />
+          {passwordError && (
+            <div className="text-red-500 text-sm mb-3">{passwordError}</div>
+          )}
+
+          <button
+            onClick={handleLogin}
+            disabled={loading}
+            className={`w-full py-2 rounded-md text-white ${
+              loading ? "bg-gray-400 cursor-not-allowed" : "bg-teal-800"
+            }`}
+          >
+            {loading ? "در حال ورود..." : "ورود"}
+          </button>
+
+          <div className="mt-4 text-center text-sm text-gray-600">
+            هیچ اکانتی ندارید؟{" "}
+            <span
+              onClick={onSwitchToRegister}
+              className="text-blue-600 cursor-pointer"
+            >
+              ثبت نام
+            </span>
+          </div>
         </div>
       </div>
-    </div>
+    </form>
   );
 }
 

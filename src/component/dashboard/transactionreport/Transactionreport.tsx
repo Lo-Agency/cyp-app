@@ -8,7 +8,6 @@ import DatePicker from "react-multi-date-picker";
 import DateObject from "react-date-object";
 import persian from "react-date-object/calendars/persian";
 import persian_fa from "react-date-object/locales/persian_fa";
-import * as XLSX from "xlsx";
 
 const ITEMS_PER_PAGE = 5;
 
@@ -25,6 +24,7 @@ const TransactionReportPage = () => {
     "all"
   );
   const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedTransaction, setSelectedTransaction] =
@@ -51,12 +51,17 @@ const TransactionReportPage = () => {
 
     fetchTransactions();
   }, []);
-
   const handleFilter = () => {
     const result = transactions.filter((t) => {
       const date = new DateObject(t.date);
-      const matchDate =
-        (!startDate || date >= startDate) && (!endDate || date <= endDate);
+
+      const start = startDate ? new DateObject(startDate) : null;
+      const end = endDate ? new DateObject(endDate) : null;
+
+      if (start) start.set({ hour: 0, minute: 0, second: 0, millisecond: 0 });
+      if (end) end.set({ hour: 23, minute: 59, second: 59, millisecond: 999 });
+
+      const matchDate = (!start || date >= start) && (!end || date <= end);
 
       const matchType =
         typeFilter === "all" || t.type.toLowerCase() === typeFilter;
@@ -69,10 +74,29 @@ const TransactionReportPage = () => {
   };
 
   const handleExportExcel = () => {
-    const worksheet = XLSX.utils.json_to_sheet(filteredTransactions);
-    const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, "Transactions");
-    XLSX.writeFile(workbook, "transactions.xlsx");
+    setIsLoading(true);
+
+    // کد دانلود فایل اکسل خودت رو اینجا قرار بده.
+    // فرض مثال: ساخت Blob و دانلود فایل
+    const fileName = "sample.xlsx";
+    const fileContent = "..."; // این قسمت رو با محتوای واقعی فایل جایگزین کن
+
+    const blob = new Blob([fileContent], {
+      type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    });
+    const url = window.URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = fileName;
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    window.URL.revokeObjectURL(url);
+
+    // بعد از 3 ثانیه انیمیشن رو متوقف کن
+    setTimeout(() => {
+      setIsLoading(false);
+    }, 3000);
   };
 
   const handleEdite = (transaction: ITransaction) => {
@@ -92,8 +116,7 @@ const TransactionReportPage = () => {
       setTransactions(updated);
       setFilteredTransactions(updated);
       alert("تراکنش با موفقیت حذف شد.");
-    } catch (err) {
-      console.log("❌ خطا در حذف تراکنش:", err);
+    } catch {
       alert("خطا در حذف تراکنش. لطفاً دوباره تلاش کنید.");
     }
   };
@@ -108,25 +131,42 @@ const TransactionReportPage = () => {
   return (
     <div className="p-6 space-y-6">
       {/* header with filter & export */}
-      <div className="flex justify-between items-center flex-wrap gap-4">
+      <div className="flex justify-between items-center overflow-x-auto flex-wrap gap-4">
         <button
           onClick={() => setIsFilterModalOpen(true)}
-          className="bg-blue-500 text-white px-4 py-1 rounded hover:bg-blue-600"
+          className="flex items-center gap-2 border border-blue-500 text-blue-500 px-4 py-1 rounded-lg hover:bg-blue-50 transition"
         >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            strokeWidth={2}
+            stroke="currentColor"
+            className="w-5 h-5"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2a1 1 0 01-.293.707l-6.414 6.414A1 1 0 0014 13v4.586a1 1 0 01-.293.707l-2 2A1 1 0 0110 20v-7a1 1 0 00-.293-.707L3.293 6.707A1 1 0 013 6V4z"
+            />
+          </svg>
           فیلتر
         </button>
 
         <button
           onClick={handleExportExcel}
-          className="bg-green-500 text-white px-4 py-1 rounded hover:bg-green-600"
+          disabled={isLoading}
+          className={`bg-green-500 text-white px-4 py-1 rounded hover:bg-green-600 ${
+            isLoading ? "opacity-50 cursor-not-allowed" : ""
+          }`}
         >
-          دریافت Excel
+          {isLoading ? "در حال دریافت..." : "دریافت Excel"}
         </button>
       </div>
 
       {/* modal فیلتر */}
       {isFilterModalOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-30 flex justify-center items-center z-50">
+        <div className="fixed inset-0 bg-opacity-30 backdrop-blur-sm flex items-center justify-center z-50">
           <div className="bg-white rounded-lg p-6 w-full max-w-md space-y-4 shadow-xl relative">
             <button
               onClick={() => setIsFilterModalOpen(false)}

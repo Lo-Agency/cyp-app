@@ -6,6 +6,7 @@ import categoryRoutes from "./api/category/category.routes"
 import budgetRoutes from "./api/budget/budget.routes"
 import goalRoutes from "./api/goal/goal.routes"
 import debtRoutes from "./api/debt/debt.routes"
+import reportRoutes from "./api/report/report.routes.js";
 const app = express();
 
 app.use(
@@ -22,7 +23,8 @@ app.use("/api/transaction", transactionRoutes);
 app.use ("/api/budget" , budgetRoutes);
 app.use ("/api/goal" , goalRoutes);
 app.use ("/api/debt" , debtRoutes);
+app.use("/api/report", reportRoutes);
+app.use("/api/category", categoryRoutes);
 app.listen(5000, () => {
   console.log("Server running on http://localhost:5000");
 });
-app.use("/api/category", categoryRoutes)
