@@ -55,7 +55,6 @@ export default function Modal({ onClose }: ModalProps) {
   }, []);
 
   const handleSubmit = async () => {
-    console.log("test");
     const errors: { title?: string; amount?: string; category?: string } = {};
 
     const amount = Number(newTransaction.amount);

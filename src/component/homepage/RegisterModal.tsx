@@ -137,6 +137,7 @@ function RegisterModal({
               className="w-full px-4 py-2 mt-1 rounded-xl text-gray-900 bg-gray-100 outline-none focus:ring-2 focus:ring-black/10"
               value={formData.name}
               onChange={handleChange}
+              autoComplete="current-password"
             />
             {error.name && (
               <div className="text-red-500 text-sm mb-3">{error.name}</div>
@@ -154,6 +155,7 @@ function RegisterModal({
               className="w-full px-4 py-2 mt-1 rounded-xl text-gray-900 bg-gray-100 outline-none focus:ring-2 focus:ring-black/10"
               value={formData.email}
               onChange={handleChange}
+              autoComplete="current-password"
             />
             {error.email && (
               <div className="text-red-500 text-sm mb-3">{error.email}</div>
@@ -171,6 +173,7 @@ function RegisterModal({
               className="w-full px-4 py-2 mt-1 rounded-xl text-gray-900 bg-gray-100 outline-none focus:ring-2 focus:ring-black/10"
               value={formData.password}
               onChange={handleChange}
+              autoComplete="current-password"
             />
             {error.password && (
               <div className="text-red-500 text-sm mb-3">{error.password}</div>
@@ -188,6 +191,7 @@ function RegisterModal({
               className="w-full px-4 py-2 mt-1 rounded-xl text-gray-900 bg-gray-100 outline-none focus:ring-2 focus:ring-black/10"
               value={formData.confirmPassword}
               onChange={handleChange}
+              autoComplete="current-password"
             />
             {error.confirmPassword && (
               <div className="text-red-500 text-sm mb-3">

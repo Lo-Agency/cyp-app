@@ -119,6 +119,7 @@ function LoginModal({
             className="w-full mb-1 px-4 py-2 border text-gray-950 rounded-md bg-gray-50"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
+            autoComplete="current-password"
           />
           {emailError && (
             <div className="text-red-500 text-sm mb-3">{emailError}</div>
@@ -130,6 +131,7 @@ function LoginModal({
             className="w-full mb-1 px-4 py-2 border text-gray-900 rounded-md bg-gray-50"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
+            autoComplete="current-password"
           />
           {passwordError && (
             <div className="text-red-500 text-sm mb-3">{passwordError}</div>
