@@ -42,21 +42,21 @@ const Layout = () => {
 
       <div className="bg-white rounded-b-2xl shadow flex overflow-x-hidden min-h-[calc(100vh-88px)]">
         {/* Sidebar */}
-        <div className="w-64 bg-white border-r border-gray-300">
-          <ul className="space-y-2 p-4">
+        <div className="w-16 md:w-20 lg:w-64 bg-white border-r border-gray-300 flex flex-col items-center lg:items-start">
+          <ul className="space-y-2 py-4 w-full">
             {dashboardItems.map((item, index) => (
-              <li key={index} className="flex items-center gap-2">
-                <img src={item.icon} className="w-5 h-5" />
+              <li key={index} className="w-full">
                 <Link
                   to={item.path}
                   onClick={item.title === "خروج" ? logout : undefined}
-                  className={`flex items-center gap-2 p-2 rounded hover:bg-gray-100 ${
+                  className={`flex items-center justify-center lg:justify-start gap-2 p-2 rounded hover:bg-gray-100 w-full ${
                     location.pathname === item.path
                       ? "bg-blue-100 text-blue-600"
                       : ""
                   }`}
                 >
-                  {item.title}
+                  <img src={item.icon} className="w-5 h-5" />
+                  <span className="hidden lg:inline">{item.title}</span>
                 </Link>
               </li>
             ))}

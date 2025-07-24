@@ -64,7 +64,7 @@ export default function Dashboard() {
         console.error("خطا:", err);
         setUser({
           name: "کاربر ناشناس",
-          id: 0,
+          id: "0",
           email: "",
           password: "",
         });
