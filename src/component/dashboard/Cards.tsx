@@ -3,13 +3,22 @@ import { memo } from "react";
 interface CardProps {
   title: string;
   amount: string | number;
+  icon?: string;
+  bgColor?: string;
+  textColor?: string;
+  className?: string;
 }
 
-function Cards({ title, amount }: CardProps) {
+function Cards({ title, amount, icon, bgColor = "bg-gray-50", textColor = "text-gray-800" }: CardProps) {
   return (
-    <div className="flex flex-col items-start bg-gray-50 border font-Yekan border-gray-200 rounded-lg p-4 w-40 h-20 hover:shadow-md transition">
-      <span className="text-sm text-gray-600">{title}</span>
-      <span className="text-2xl font-bold text-gray-800 mt-2">{amount}</span>
+    <div
+      className={`flex items-center gap-3 p-4 rounded-lg shadow-sm hover:shadow-md transition-all duration-200 ${bgColor} ${textColor} w-full max-w-xs sm:max-w-[200px]`}
+    >
+      {icon && <img src={icon} alt={title} className="w-6 h-6" />}
+      <div className="flex flex-col">
+        <span className="text-sm font-medium text-gray-600">{title}</span>
+        <span className="text-xl font-bold mt-1">{amount}</span>
+      </div>
     </div>
   );
 }

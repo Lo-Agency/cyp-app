@@ -14,7 +14,7 @@ interface DebtModalProps {
 }
 
 const DebtModal = ({ onClose, addDebt, updateDebt, editingDebt }: DebtModalProps) => {
- const { user } = useUser();
+  const { user } = useUser();
   const [formData, setFormData] = useState({
     title: "",
     amount: 0,
@@ -88,9 +88,9 @@ const DebtModal = ({ onClose, addDebt, updateDebt, editingDebt }: DebtModalProps
       userId: String(user?.id) || "",
       remainingAmount: formData.amount - formData.paidAmount,
       user: {
-        id: "",
-        name: ""
-      }
+        id: String(user?.id) || "",
+        name: user?.name || "",
+      },
     };
 
     if (editingDebt) {
@@ -103,8 +103,8 @@ const DebtModal = ({ onClose, addDebt, updateDebt, editingDebt }: DebtModalProps
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50" dir="rtl">
-      <div className="bg-white p-8 rounded-xl shadow-2xl w-full max-w-md transform transition-all">
+    <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50 transition-opacity duration-500 ease-in-out" dir="rtl">
+      <div className="bg-white p-8 rounded-2xl shadow-2xl w-full max-w-md transform transition-all duration-500 ease-in-out animate-slideUp">
         <h2 className="text-2xl font-bold mb-6 text-gray-800">
           {editingDebt ? "ویرایش بدهی" : "ثبت بدهی جدید"}
         </h2>
@@ -115,11 +115,11 @@ const DebtModal = ({ onClose, addDebt, updateDebt, editingDebt }: DebtModalProps
               type="text"
               value={formData.title}
               onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-              className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
+              className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition bg-gray-50"
               required
             />
             {formErrors.title && (
-              <p className="text-red-500 text-sm mt-1">{formErrors.title}</p>
+              <p className="text-red-500 text-sm mt-1 animate-slideIn">{formErrors.title}</p>
             )}
           </div>
           <div>
@@ -129,11 +129,11 @@ const DebtModal = ({ onClose, addDebt, updateDebt, editingDebt }: DebtModalProps
               min="1"
               value={formData.amount || ""}
               onChange={(e) => setFormData({ ...formData, amount: Number(e.target.value) })}
-              className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
+              className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition bg-gray-50"
               required
             />
             {formErrors.amount && (
-              <p className="text-red-500 text-sm mt-1">{formErrors.amount}</p>
+              <p className="text-red-500 text-sm mt-1 animate-slideIn">{formErrors.amount}</p>
             )}
           </div>
           <div>
@@ -143,11 +143,11 @@ const DebtModal = ({ onClose, addDebt, updateDebt, editingDebt }: DebtModalProps
               min="0"
               value={formData.paidAmount || ""}
               onChange={(e) => setFormData({ ...formData, paidAmount: Number(e.target.value) })}
-              className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
+              className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition bg-gray-50"
               required
             />
             {formErrors.paidAmount && (
-              <p className="text-red-500 text-sm mt-1">{formErrors.paidAmount}</p>
+              <p className="text-red-500 text-sm mt-1 animate-slideIn">{formErrors.paidAmount}</p>
             )}
           </div>
           <div>
@@ -158,10 +158,10 @@ const DebtModal = ({ onClose, addDebt, updateDebt, editingDebt }: DebtModalProps
               step="0.1"
               value={formData.interestRate || ""}
               onChange={(e) => setFormData({ ...formData, interestRate: Number(e.target.value) })}
-              className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
+              className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition bg-gray-50"
             />
             {formErrors.interestRate && (
-              <p className="text-red-500 text-sm mt-1">{formErrors.interestRate}</p>
+              <p className="text-red-500 text-sm mt-1 animate-slideIn">{formErrors.interestRate}</p>
             )}
           </div>
           <div>
@@ -171,11 +171,11 @@ const DebtModal = ({ onClose, addDebt, updateDebt, editingDebt }: DebtModalProps
               onChange={(date) => setFormData({ ...formData, dueDate: date as DateObject })}
               calendar={persian}
               locale={persian_fa}
-              inputClass="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
+              inputClass="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition bg-gray-50"
               format="YYYY/MM/DD"
             />
             {formErrors.dueDate && (
-              <p className="text-red-500 text-sm mt-1">{formErrors.dueDate}</p>
+              <p className="text-red-500 text-sm mt-1 animate-slideIn">{formErrors.dueDate}</p>
             )}
           </div>
           <div>
@@ -184,24 +184,24 @@ const DebtModal = ({ onClose, addDebt, updateDebt, editingDebt }: DebtModalProps
               type="text"
               value={formData.creditor}
               onChange={(e) => setFormData({ ...formData, creditor: e.target.value })}
-              className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
+              className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition bg-gray-50"
               required
             />
             {formErrors.creditor && (
-              <p className="text-red-500 text-sm mt-1">{formErrors.creditor}</p>
+              <p className="text-red-500 text-sm mt-1 animate-slideIn">{formErrors.creditor}</p>
             )}
           </div>
           <div className="flex justify-end gap-3 pt-4">
             <button
               type="button"
               onClick={onClose}
-              className="bg-gray-300 text-gray-700 px-5 py-2 rounded-lg hover:bg-gray-400 transition"
+              className="px-6 py-2 rounded-full bg-gray-200 text-gray-700 hover:bg-gray-300 hover:scale-105 transition-all duration-200 text-sm font-semibold shadow-sm"
             >
               لغو
             </button>
             <button
               type="submit"
-              className="bg-blue-500 text-white px-5 py-2 rounded-lg hover:bg-blue-600 transition"
+              className="px-6 py-2 rounded-full bg-gradient-to-r from-blue-500 to-blue-600 text-white hover:from-blue-600 hover:to-blue-800 hover:scale-105 transition-all duration-200 text-sm font-semibold shadow-sm"
             >
               {editingDebt ? "به‌روزرسانی" : "افزودن"}
             </button>
