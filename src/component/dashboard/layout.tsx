@@ -20,9 +20,9 @@ const Layout = () => {
   const location = useLocation();
 
   return (
-    <div className="min-h-screen bg-gray-100 p-6" dir="rtl">
+    <div className="min-h-screen bg-gray-100 p-4 sm:p-6" dir="rtl">
       <header className="bg-white rounded-t-2xl shadow p-4 border-b border-gray-300 flex justify-between items-center">
-        <h1 className="text-2xl font-bold">CYP</h1>
+        <h1 className="text-xl sm:text-2xl font-bold">CYP</h1>
         <div className="flex items-center gap-4">
           <button className="relative">
             <img
@@ -40,9 +40,9 @@ const Layout = () => {
         </div>
       </header>
 
-      <div className="bg-white rounded-b-2xl shadow flex overflow-x-hidden min-h-[calc(100vh-88px)]">
+      <div className="bg-white rounded-b-2xl shadow flex overflow-hidden min-h-[calc(100vh-88px)]">
         {/* Sidebar */}
-        <div className="w-16 md:w-20 lg:w-64 bg-white border-r border-gray-300 flex flex-col items-center lg:items-start">
+        <div className="sm:w-16 md:w-20 lg:w-64 bg-white border-r border-gray-300 flex flex-col items-center lg:items-start">
           <ul className="space-y-2 py-4 w-full">
             {dashboardItems.map((item, index) => (
               <li key={index} className="w-full">
@@ -62,7 +62,8 @@ const Layout = () => {
             ))}
           </ul>
         </div>
-        <div className="flex-1 p-6">
+
+        <div className="flex-1 p-4 sm:p-6 overflow-auto">
           <Outlet />
         </div>
       </div>
