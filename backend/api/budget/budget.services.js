@@ -1,4 +1,4 @@
-import { db } from "../../utils/db";
+import { db } from "../../utils/db.js";
 
 export const createBudget = async ({
   amount,
@@ -9,7 +9,8 @@ export const createBudget = async ({
 }) => {
   if (!amount || amount <= 0) throw new Error("Amount must be positive");
   if (!categoryId) throw new Error("Category ID is required");
-  if (!["monthly", "weekly", "yearly"].includes(period)) throw new Error("Invalid period");
+  if (!["monthly", "weekly", "yearly"].includes(period))
+    throw new Error("Invalid period");
   console.log("Creating budget:", {
     amount,
     categoryId,
@@ -17,7 +18,7 @@ export const createBudget = async ({
     spent,
     period,
   });
-  return db.budget.create({
+  return db.Budget.create({
     data: {
       amount,
       spent,
@@ -33,7 +34,7 @@ export const createBudget = async ({
 };
 
 export const getUserBudgets = async (userId) => {
-  return db.budget.findMany({
+  return db.Budget.findMany({
     where: { userId },
     include: {
       category: {
@@ -41,4 +42,31 @@ export const getUserBudgets = async (userId) => {
       },
     },
   });
+};
+export const updateBudget = async (id, userId, data) => {
+  return db.budget.update({
+    where: { id: parseInt(id), userId },
+    data: {
+      amount: data.amount,
+      spent: data.spent,
+      period: data.period,
+      category: { connect: { id: parseInt(data.categoryId) } },
+    },
+  });
+};
+
+export const deleteBudget = async (id, userId) => {
+  const budget = await db.budget.findUnique({
+    where: { id: id, userId },
+  });
+
+  if (!budget) {
+    throw new Error("بودجه پیدا نشد");
+  }
+
+  await db.budget.delete({
+    where: { id: id },
+  });
+
+  return true;
 };

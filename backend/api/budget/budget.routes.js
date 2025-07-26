@@ -1,16 +1,18 @@
 import express from "express";
 import {
   createBudget,
-  getUserBudgets
+  getUserBudgets,
+  updateBudget,
+  deleteBudget,
 } from "./budget.services.js";
 import { verifyAccessToken } from "../../utils/jwt.js";
 
 const router = express.Router();
 
-router.use(verifyAccessToken); 
+router.use(verifyAccessToken);
 router.post("/", async (req, res, next) => {
   try {
-    const { amount, categoryId, spent, period} = req.body;
+    const { amount, categoryId, spent, period } = req.body;
     const userId = req.user.id;
 
     const budget = await createBudget({
@@ -26,7 +28,6 @@ router.post("/", async (req, res, next) => {
   }
 });
 
-
 router.get("/", async (req, res, next) => {
   try {
     const userId = req.user.id;
@@ -41,16 +42,15 @@ router.put("/:id", async (req, res, next) => {
     const { id } = req.params;
     const { amount, categoryId, spent, period } = req.body;
     const userId = req.user.id;
-    const budget = await db.budget.update({
-      where: { id, userId },
-      data: {
-        amount,
-        spent,
-        period,
-        category: { connect: { id: parseInt(categoryId) } },
-      },
+
+    const updatedBudget = await updateBudget(id, userId, {
+      amount,
+      categoryId,
+      spent,
+      period,
     });
-    res.json(budget);
+
+    res.json(updatedBudget);
   } catch (err) {
     next(err);
   }
@@ -58,11 +58,11 @@ router.put("/:id", async (req, res, next) => {
 
 router.delete("/:id", async (req, res, next) => {
   try {
-    const { id } = req.params;
+    const budgetId = req.params.id;
     const userId = req.user.id;
-    const budget = await db.budget.delete({
-      where: { id, userId },
-    });
+
+    await deleteBudget(budgetId, userId);
+
     res.json({ message: "بودجه با موفقیت حذف شد" });
   } catch (err) {
     next(err);
