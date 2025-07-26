@@ -8,6 +8,7 @@ import {
   CartesianGrid,
   Tooltip,
   Legend,
+  ResponsiveContainer,
 } from "recharts";
 import Modal from "./Modaltransaction";
 import { useUser } from "../../contexts/userContext";
@@ -121,7 +122,7 @@ export default function Dashboard() {
         </div>
 
         {/* Cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-1 lg:grid-cols-2 gap-4 mb-8">
+        <div className="grid grid-cols-1 sm:grid-cols-1 lg:grid-cols-3 md:grid-cols-1 gap-4 mb-8">
           <Card
             title="درآمدها"
             amount={`${totalIncome.toLocaleString()} تومان`}
@@ -147,26 +148,28 @@ export default function Dashboard() {
           <h3 className="text-base sm:text-lg font-semibold text-gray-700 mb-4">
             روند درآمد و هزینه
           </h3>
-          <div className="min-w-[500px] sm:min-w-full">
-            <LineChart width={500} height={300} data={chartData}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="name" />
-              <YAxis />
-              <Tooltip />
-              <Legend />
-              <Line
-                type="monotone"
-                dataKey="INCOME"
-                stroke="#16a34a"
-                name="درآمد"
-              />
-              <Line
-                type="monotone"
-                dataKey="EXPENSE"
-                stroke="#dc2626"
-                name="هزینه"
-              />
-            </LineChart>
+          <div className="sm:min-w-full flex justify-center items-center">
+            <ResponsiveContainer width="100%" aspect={2}>
+              <LineChart data={chartData}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="name" />
+                <YAxis />
+                <Tooltip />
+                <Legend />
+                <Line
+                  type="monotone"
+                  dataKey="INCOME"
+                  stroke="#16a34a"
+                  name="درآمد"
+                />
+                <Line
+                  type="monotone"
+                  dataKey="EXPENSE"
+                  stroke="#dc2626"
+                  name="هزینه"
+                />
+              </LineChart>
+            </ResponsiveContainer>
           </div>
         </div>
 
@@ -180,7 +183,7 @@ export default function Dashboard() {
               تراکنشی ثبت نشده است.
             </p>
           ) : (
-            <table className="min-w-[600px] w-full text-right text-sm">
+            <table className="w-full text-right text-sm">
               <thead>
                 <tr className="bg-gray-100 border-b text-gray-600">
                   <th className="p-2 font-medium">دسته‌بندی</th>

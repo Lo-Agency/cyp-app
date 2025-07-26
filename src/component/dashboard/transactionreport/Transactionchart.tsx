@@ -59,11 +59,11 @@ const TransactionChart = ({ transactions }: TransactionChartProps) => {
   }, []);
   return (
     <>
+      <h2 className="font-semibold text-lg mb-4">وضعیت تراکنش</h2>
       <div
-        className="bg-white p-4 rounded-xl shadow w-full flex flex-row md:flex-row gap-x-30 "
-        dir="ltr"
+        className="bg-white p-4 rounded-xl shadow w-full flex flex-col md:flex-row justify-around "
+        dir="rtl"
       >
-        <h2 className="font-semibold text-lg mb-4">Transaction Status</h2>
         <div>
           <PieChart width={300} height={250}>
             <Pie
