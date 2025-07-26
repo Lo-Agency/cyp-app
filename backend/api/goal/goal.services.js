@@ -1,4 +1,4 @@
-import { db } from "../../utils/db";
+import { db } from "../../utils/db.js";
 
 export const createGoal = async ({
   title,
@@ -8,12 +8,14 @@ export const createGoal = async ({
   userId,
 }) => {
   if (!title) throw new Error("عنوان هدف الزامی است");
-  if (!targetAmount || targetAmount <= 0) throw new Error("مبلغ هدف باید مثبت باشد");
-  if (currentAmount < 0) throw new Error("مبلغ جمع‌آوری‌شده نمی‌تواند منفی باشد");
+  if (!targetAmount || targetAmount <= 0)
+    throw new Error("مبلغ هدف باید مثبت باشد");
+  if (currentAmount < 0)
+    throw new Error("مبلغ جمع‌آوری‌شده نمی‌تواند منفی باشد");
   if (!deadline) throw new Error("مهلت الزامی است");
   if (!userId) throw new Error("شناسه کاربر الزامی است");
 
-  return db.goal.create({
+  return db.Goal.create({
     data: {
       title,
       targetAmount,
@@ -27,7 +29,7 @@ export const createGoal = async ({
 };
 
 export const getUserGoals = async (userId) => {
-  return db.goal.findMany({
+  return db.Goal.findMany({
     where: { userId },
     include: {
       user: {
@@ -37,18 +39,19 @@ export const getUserGoals = async (userId) => {
   });
 };
 
-export const updateGoal = async (id, userId, {
-  title,
-  targetAmount,
-  currentAmount,
-  deadline,
-}) => {
+export const updateGoal = async (
+  id,
+  userId,
+  { title, targetAmount, currentAmount, deadline }
+) => {
   if (!title) throw new Error("عنوان هدف الزامی است");
-  if (!targetAmount || targetAmount <= 0) throw new Error("مبلغ هدف باید مثبت باشد");
-  if (currentAmount < 0) throw new Error("مبلغ جمع‌آوری‌شده نمی‌تواند منفی باشد");
+  if (!targetAmount || targetAmount <= 0)
+    throw new Error("مبلغ هدف باید مثبت باشد");
+  if (currentAmount < 0)
+    throw new Error("مبلغ جمع‌آوری‌شده نمی‌تواند منفی باشد");
   if (!deadline) throw new Error("مهلت الزامی است");
 
-  return db.goal.update({
+  return db.Goal.update({
     where: { id, userId },
     data: {
       title,
@@ -60,7 +63,7 @@ export const updateGoal = async (id, userId, {
 };
 
 export const deleteGoal = async (id, userId) => {
-  return db.goal.delete({
+  return db.Goal.delete({
     where: { id, userId },
   });
 };

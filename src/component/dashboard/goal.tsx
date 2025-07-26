@@ -6,17 +6,21 @@ import Cards from "./Cards";
 import { IGoal } from "../../interfaces/goal";
 import GoalModal from "./goalModal";
 function Goal() {
-     const { user } = useUser();
+  const { user } = useUser();
   const [goals, setGoals] = useState<IGoal[]>([]);
   const [showModal, setShowModal] = useState(false);
   const [editingGoal, setEditingGoal] = useState<IGoal | null>(null);
-  const [showDeleteConfirm, setShowDeleteConfirm] = useState<string | null>(null);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState<string | null>(
+    null
+  );
 
   useEffect(() => {
     const fetchGoals = async () => {
       try {
-        const res = await axios.get("http://localhost:5000/api/goal", {
-          headers: { Authorization: `Bearer ${localStorage.getItem("accessToken")}` },
+        const res = await axios.get<IGoal[]>("http://localhost:5000/api/goal", {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+          },
         });
         setGoals(res.data);
       } catch (err) {
@@ -28,9 +32,15 @@ function Goal() {
 
   const addGoal = async (newGoal: IGoal) => {
     try {
-      const res = await axios.post("http://localhost:5000/api/goal", newGoal, {
-        headers: { Authorization: `Bearer ${localStorage.getItem("accessToken")}` },
-      });
+      const res = await axios.post<IGoal>(
+        "http://localhost:5000/api/goal",
+        newGoal,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+          },
+        }
+      );
       setGoals((prev) => [...prev, res.data]);
     } catch (err) {
       console.error("خطا در افزودن هدف:", err);
@@ -43,11 +53,13 @@ function Goal() {
         `http://localhost:5000/api/goal/${updatedGoal.id}`,
         updatedGoal,
         {
-          headers: { Authorization: `Bearer ${localStorage.getItem("accessToken")}` },
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+          },
         }
       );
       setGoals((prev) =>
-        prev.map((g) => (g.id === updatedGoal.id ? res.data : g))
+        prev.map((g) => (g.id === updatedGoal.id ? (res.data as IGoal) : g))
       );
     } catch (err) {
       console.error("خطا در ویرایش هدف:", err);
@@ -57,7 +69,9 @@ function Goal() {
   const deleteGoal = async (goalId: string) => {
     try {
       await axios.delete(`http://localhost:5000/api/goal/${goalId}`, {
-        headers: { Authorization: `Bearer ${localStorage.getItem("accessToken")}` },
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+        },
       });
       setGoals((prev) => prev.filter((g) => g.id !== goalId));
       setShowDeleteConfirm(null);
@@ -80,7 +94,9 @@ function Goal() {
   return (
     <div className="flex-1 p-6" dir="rtl">
       <div className="flex justify-between items-center mb-6">
-        <h2 className="text-2xl font-bold">مدیریت اهداف مالی، {user?.name || "کاربر"}</h2>
+        <h2 className="text-2xl font-bold">
+          مدیریت اهداف مالی، {user?.name || "کاربر"}
+        </h2>
         <div className="flex gap-2">
           <button
             className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
@@ -102,17 +118,27 @@ function Goal() {
 
       {/* خلاصه اهداف */}
       <div className="bg-white p-6 rounded-xl shadow-lg mb-6">
-        <h3 className="text-lg font-semibold text-gray-700 mb-4">خلاصه اهداف</h3>
+        <h3 className="text-lg font-semibold text-gray-700 mb-4">
+          خلاصه اهداف
+        </h3>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <Cards title="مجموع هدف" amount={`${totalTargetAmount.toLocaleString()} تومان`} />
-          <Cards title="جمع‌آوری‌شده" amount={`${totalCurrentAmount.toLocaleString()} تومان`} />
+          <Cards
+            title="مجموع هدف"
+            amount={`${totalTargetAmount.toLocaleString()} تومان`}
+          />
+          <Cards
+            title="جمع‌آوری‌شده"
+            amount={`${totalCurrentAmount.toLocaleString()} تومان`}
+          />
           <Cards title="درصد پیشرفت" amount={`${progressPercent}%`} />
         </div>
       </div>
 
       {/* لیست اهداف */}
       <div className="bg-white p-6 rounded-xl shadow mb-6">
-        <h3 className="text-lg font-semibold text مخالف-gray-700 mb-4">لیست اهداف</h3>
+        <h3 className="text-lg font-semibold text مخالف-gray-700 mb-4">
+          لیست اهداف
+        </h3>
         {goals.length === 0 ? (
           <p className="text-gray-500">هیچ هدفی ثبت نشده است.</p>
         ) : (
@@ -130,7 +156,10 @@ function Goal() {
             <tbody>
               {goals.map((goal) => {
                 const progress = goal.targetAmount
-                  ? Math.min((goal.currentAmount / goal.targetAmount) * 100, 100)
+                  ? Math.min(
+                      (goal.currentAmount / goal.targetAmount) * 100,
+                      100
+                    )
                   : 0;
                 const isWarning = progress >= 80 ? "warning" : "safe";
                 return (
@@ -139,8 +168,12 @@ function Goal() {
                       {goal.title}
                       {isWarning && <span className="text-red-500">⚠️</span>}
                     </td>
-                    <td className="p-2">{goal.targetAmount.toLocaleString()}</td>
-                    <td className="p-2">{goal.currentAmount.toLocaleString()}</td>
+                    <td className="p-2">
+                      {goal.targetAmount.toLocaleString()}
+                    </td>
+                    <td className="p-2">
+                      {goal.currentAmount.toLocaleString()}
+                    </td>
                     <td className="p-2">
                       {typeof goal.deadline === "string"
                         ? new Date(goal.deadline).toLocaleDateString("fa-IR")
@@ -172,9 +205,9 @@ function Goal() {
                         حذف
                       </button>
                     </td>
-                    </tr>
-                  );
-                })}
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
         )}
@@ -185,7 +218,9 @@ function Goal() {
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white p-6 rounded-xl shadow-lg w-full max-w-sm">
             <h3 className="text-lg font-semibold mb-4">تأیید حذف</h3>
-            <p className="text-gray-600 mb-4">آیا مطمئن هستید که می‌خواهید این هدف را حذف کنید؟</p>
+            <p className="text-gray-600 mb-4">
+              آیا مطمئن هستید که می‌خواهید این هدف را حذف کنید؟
+            </p>
             <div className="flex justify-end gap-2">
               <button
                 onClick={() => setShowDeleteConfirm(null)}
@@ -218,6 +253,6 @@ function Goal() {
       )}
     </div>
   );
-};
+}
 
 export default Goal;
