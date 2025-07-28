@@ -10,7 +10,7 @@ import {
   Legend,
   ResponsiveContainer,
 } from "recharts";
-import Modal from "./Modaltransaction";
+import Modaltransaction from "./Modaltransaction";
 import { useUser } from "../../contexts/userContext";
 import { ITransaction } from "../../interfaces/transaction";
 
@@ -231,7 +231,7 @@ export default function Dashboard() {
       </div>
 
       {/* Modal */}
-      {showModal && <Modal onClose={() => setShowModal(false)} />}
+      {showModal && <Modaltransaction onClose={() => setShowModal(false)} />}
     </div>
   );
 }

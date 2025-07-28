@@ -9,10 +9,11 @@ import { ITransaction } from "../../interfaces/transaction";
 
 interface ModalProps {
   onClose: () => void;
-  transaction?: ITransaction;
+  transaction?: ITransaction | null;
+  onSave: (newTransaction: ITransaction) => void;
 }
 
-export default function Modal({ onClose }: ModalProps) {
+export default function Modaltransaction({ onClose, onSave }: ModalProps) {
   const [transactionType, setTransactionType] = useState<"INCOME" | "EXPENSE">(
     "EXPENSE"
   );
@@ -76,12 +77,16 @@ export default function Modal({ onClose }: ModalProps) {
     };
 
     try {
-      await axios.post("http://localhost:5000/api/transaction", formatted, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-        },
-      });
-
+      const res = await axios.post<ITransaction>(
+        "http://localhost:5000/api/transaction",
+        formatted,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+          },
+        }
+      );
+      onSave(res.data);
       onClose();
     } catch (error) {
       console.error("خطا در ثبت تراکنش:", error);

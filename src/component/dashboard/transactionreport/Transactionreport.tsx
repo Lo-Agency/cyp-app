@@ -30,6 +30,14 @@ const TransactionReportPage = () => {
   const [selectedTransaction, setSelectedTransaction] =
     useState<ITransaction | null>(null);
 
+  // تابع مرتب‌سازی بر اساس تاریخ (جدیدترین اول)
+  const sortTransactionsByDate = (data: ITransaction[]) => {
+    return [...data].sort(
+      (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
+    );
+  };
+
+  // گرفتن تراکنش‌ها از سرور
   useEffect(() => {
     const fetchTransactions = async () => {
       try {
@@ -42,8 +50,11 @@ const TransactionReportPage = () => {
             },
           }
         );
-        setTransactions(res.data);
-        setFilteredTransactions(res.data);
+
+        const sortedData = sortTransactionsByDate(res.data);
+        setTransactions(sortedData);
+        setFilteredTransactions(sortedData);
+        setCurrentPage(1);
       } catch (err) {
         console.error("❌ خطا در دریافت تراکنش‌ها:", err);
       }
@@ -51,6 +62,8 @@ const TransactionReportPage = () => {
 
     fetchTransactions();
   }, []);
+
+  // فیلتر کردن تراکنش‌ها بر اساس تاریخ و نوع
   const handleFilter = () => {
     const result = transactions.filter((t) => {
       const date = new DateObject(t.date);
@@ -69,7 +82,40 @@ const TransactionReportPage = () => {
       return matchDate && matchType;
     });
 
-    setFilteredTransactions(result);
+    const sortedFiltered = sortTransactionsByDate(result);
+    setFilteredTransactions(sortedFiltered);
+    setCurrentPage(1);
+  };
+
+  // حذف تراکنش
+  const handleDelete = async (id: number) => {
+    try {
+      const token = localStorage.getItem("accessToken");
+      await axios.delete(`http://localhost:5000/api/transaction/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      const updated = transactions.filter((t) => t.id !== id);
+      const sortedData = sortTransactionsByDate(updated);
+
+      setTransactions(sortedData);
+      setFilteredTransactions(sortedData);
+      setCurrentPage(1);
+      alert("تراکنش با موفقیت حذف شد.");
+    } catch {
+      alert("خطا در حذف تراکنش. لطفاً دوباره تلاش کنید.");
+    }
+  };
+
+  // (اگر تابع افزودن تراکنش داری اینو استفاده کن)
+  const handleAddTransaction = (newTransaction: ITransaction) => {
+    const updated = [newTransaction, ...transactions];
+    const sortedData = sortTransactionsByDate(updated);
+
+    setTransactions(sortedData);
+    setFilteredTransactions(sortedData);
     setCurrentPage(1);
   };
 
@@ -77,7 +123,6 @@ const TransactionReportPage = () => {
     setIsLoading(true);
 
     // کد دانلود فایل اکسل خودت رو اینجا قرار بده.
-    // فرض مثال: ساخت Blob و دانلود فایل
     const fileName = "sample.xlsx";
     const fileContent = "..."; // این قسمت رو با محتوای واقعی فایل جایگزین کن
 
@@ -93,7 +138,6 @@ const TransactionReportPage = () => {
     link.remove();
     window.URL.revokeObjectURL(url);
 
-    // بعد از 3 ثانیه انیمیشن رو متوقف کن
     setTimeout(() => {
       setIsLoading(false);
     }, 3000);
@@ -102,23 +146,6 @@ const TransactionReportPage = () => {
   const handleEdite = (transaction: ITransaction) => {
     setSelectedTransaction(transaction);
     setIsModalOpen(true);
-  };
-
-  const handleDelete = async (id: number) => {
-    try {
-      const token = localStorage.getItem("accessToken");
-      await axios.delete(`http://localhost:5000/api/transaction/${id}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      const updated = transactions.filter((t) => t.id !== id);
-      setTransactions(updated);
-      setFilteredTransactions(updated);
-      alert("تراکنش با موفقیت حذف شد.");
-    } catch {
-      alert("خطا در حذف تراکنش. لطفاً دوباره تلاش کنید.");
-    }
   };
 
   const paginatedTransactions = filteredTransactions.slice(
@@ -130,7 +157,7 @@ const TransactionReportPage = () => {
 
   return (
     <div className="p-6 space-y-6">
-      {/* header with filter & export */}
+      {/* Header Filter & Export */}
       <div className="flex justify-between items-center overflow-x-auto flex-wrap gap-4">
         <button
           onClick={() => setIsFilterModalOpen(true)}
@@ -164,7 +191,7 @@ const TransactionReportPage = () => {
         </button>
       </div>
 
-      {/* modal فیلتر */}
+      {/* Filter Modal */}
       {isFilterModalOpen && (
         <div className="fixed inset-0 bg-opacity-30 backdrop-blur-sm flex items-center justify-center z-50">
           <div className="bg-white rounded-lg p-6 w-full max-w-md space-y-4 shadow-xl relative">
@@ -220,19 +247,19 @@ const TransactionReportPage = () => {
         </div>
       )}
 
-      {/* chart */}
+      {/* Chart */}
       <div dir="ltr">
         <TransactionChart transactions={filteredTransactions} />
       </div>
 
-      {/* table */}
+      {/* Table */}
       <TransactionTable
         transactions={paginatedTransactions}
         onEdit={handleEdite}
         onDelete={handleDelete}
       />
 
-      {/* pagination */}
+      {/* Pagination */}
       <div className="flex justify-center items-center mt-6 space-x-2 rtl:space-x-reverse">
         {Array.from({ length: totalPages }, (_, i) => (
           <button
@@ -249,11 +276,12 @@ const TransactionReportPage = () => {
         ))}
       </div>
 
-      {/* modal ویرایش تراکنش */}
+      {/* Edit Modal */}
       {isModalOpen && selectedTransaction && (
         <Modaltransaction
           transaction={selectedTransaction}
           onClose={() => setIsModalOpen(false)}
+          onSave={handleAddTransaction}
         />
       )}
     </div>
