@@ -3,13 +3,12 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
-  "scripts": {
-    "dev": "vite",
-    "build": "tsc -b && vite build",
-    "deploy": "gh-pages -d dist",
-    "lint": "eslint .",
-    "preview": "vite preview"
-  },
+"scripts": {
+  "dev": "concurrently \"tsx backend/server.ts\" \"vite\"",
+  "dev:backend": "tsx backend/server.ts",
+  "dev:frontend": "vite"
+}
+,
   "prisma": {
     "seed": "tsx prisma/seed.ts"
   },
@@ -49,6 +48,7 @@
     "@types/react-dom": "^19.0.4",
     "@types/xlsx": "^0.0.36",
     "@vitejs/plugin-react": "^4.3.4",
+    "concurrently": "^9.2.0",
     "eslint": "^9.21.0",
     "eslint-plugin-react-hooks": "^5.1.0",
     "eslint-plugin-react-refresh": "^0.4.19",
