@@ -8,7 +8,11 @@
   "compilerOptions": {
     "module": "ESNext",
     "moduleResolution": "Node",
-    "esModuleInterop": true
+    "esModuleInterop": true,
+     "baseUrl": ".",
+    "paths": {
+      "@/*": ["./src/*"]
+    }
   
 }
 }
