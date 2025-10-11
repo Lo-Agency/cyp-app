@@ -203,7 +203,7 @@ export default function Dashboard() {
                       key={transaction.id}
                       className="border-b hover:bg-gray-50"
                     >
-                      <td className="p-2">{transaction.category.name}</td>
+                      <td className="p-2">{transaction.category?.name}</td>
                       <td
                         className={`p-2 font-semibold ${
                           transaction.type === "INCOME"
@@ -231,7 +231,14 @@ export default function Dashboard() {
       </div>
 
       {/* Modal */}
-      {showModal && <Modaltransaction onClose={() => setShowModal(false)} />}
+      {showModal && (
+        <Modaltransaction
+          onClose={() => setShowModal(false)}
+          onSave={(newTransaction: ITransaction) => {
+            setTransactions((prev) => [...prev, newTransaction]);
+          }}
+        />
+      )}
     </div>
   );
 }

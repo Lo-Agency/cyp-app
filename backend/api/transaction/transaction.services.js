@@ -29,6 +29,11 @@ export const createTransaction = async ({
         connect: { id: userId },
       },
     },
+    include: {
+      category: {
+        select: { name: true },
+      },
+    },
   });
 };
 
